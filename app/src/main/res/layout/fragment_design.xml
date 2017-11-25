@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/apptheme"
+    android:orientation="vertical"
+    app:ignore="NamespaceTypo">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#383838"
+        >
+
+        <itbour.onetouchshow.custom.DesignTableLayout
+            android:id="@+id/id_recyview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:scrollbars="none"
+            app:rtl_tabIndicatorColor="@color/idselcte"
+            app:rtl_tabMinWidth = "120dip"
+            app:rtl_tabMaxWidth = " 264dp"
+            app:rtl_tabPaddingStart="25dp"
+            app:rtl_tabPaddingEnd="25dp"
+            />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/id_recyview_type"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+
+    <com.ys.uilibrary.vp.NoScrollViewPager
+        android:paddingTop="5dp"
+        android:id="@+id/id_vp_home"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+</LinearLayout>

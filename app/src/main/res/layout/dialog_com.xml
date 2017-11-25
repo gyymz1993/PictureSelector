@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_shape_bg">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/id_text_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="温馨提示"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_centerInParent="true"
+            android:id="@+id/id_tv_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/id_text_title"
+            android:layout_marginTop="18dp"
+            android:gravity="center"
+            android:text="温馨提示"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:id="@+id/id_ly_twobtncontra"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/id_tv_content"
+            android:layout_marginBottom="5dp"
+            android:gravity="bottom"
+            >
+
+            <TextView
+                android:id="@+id/id_btn_cancle"
+                style="@style/layout_horizontal"
+                android:layout_height="35dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/dialog_btn_cancle"
+                android:gravity="center"
+                android:text="取消"
+                android:textColor="#FF19E9E9"
+                android:weightSum="3" />
+
+            <TextView
+                android:id="@+id/id_btn_cofirm"
+                style="@style/layout_horizontal"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/dialog_btn_confirm"
+                android:gravity="center"
+                android:text="确定"
+                android:textColor="@color/white"
+                android:weightSum="3" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/id_ly_onebtncontra"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/id_tv_content"
+            android:layout_marginBottom="5dp"
+            android:gravity="bottom|center"
+            >
+
+            <TextView
+                android:id="@+id/id_btn_olny_cofirm"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/dialog_btn_confirm"
+                android:gravity="center"
+                android:minWidth="120dp"
+                android:text="确定"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

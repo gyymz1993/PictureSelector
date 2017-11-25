@@ -1,0 +1,1 @@
+include ':app', ':netlibrary', ':mvplibrary', ':uilibrary', ':refreshlibrary', ':videolibrary', ':loginlibrary', 'keybroadpanelswitchlib'

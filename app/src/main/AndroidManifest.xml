@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="itbour.onetouchshow">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/NoTitleTheme">
+        <activity
+            android:name=".activity.SplashActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.video.videoinching.VideoinchingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.video.commoninching.CommoninchingActivity"
+            android:screenOrientation="portrait" />
+
+
+        <activity
+            android:name=".activity.search.SearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.preview.verticalpreview.verticalmodel.VerticalmodelActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.preview.verticalpreview.verticalproduct.VerticalproductActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".activity.login.LoginActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            />
+
+        <!--主页-->
+        <activity
+            android:name=".activity.main.MainActivity"
+            android:screenOrientation="portrait" />
+        <!--视频列表测试用-->
+        <activity
+            android:name=".activity.videoplay.VideoListActivity"
+            android:screenOrientation="portrait" />
+        <!--我的作品-->
+        <activity
+            android:name=".activity.myworks.MyworksActivity"
+            android:screenOrientation="portrait" />
+
+
+        <service
+            android:name="com.onetouch.service.MediaPlayerService"
+            android:enabled="false"
+            android:exported="false"
+            android:icon="@mipmap/ic_launcher" />
+
+        <service android:name=".service.ImagePorviderService" />
+
+        <!-- 监听网络状态的服务 -->
+        <service android:name=".service.NetworkStateService">
+            <intent-filter android:priority="1000">
+                <action android:name="com.text.service.NetworkStateService" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".activity.videoplay.VideoplayActivity"
+            android:configChanges="orientation|screenLayout|uiMode|screenSize"
+            android:screenOrientation="portrait" />
+
+        <!--微信登陆   start-->
+        <activity android:name="com.three.ThirdActivityPorvider" />
+        <activity-alias
+            android:name="itbour.onetouchshow.wxapi.WXEntryActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true"
+            android:label="weixin"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:targetActivity="com.three.ThirdActivityPorvider"
+            android:theme="@style/ActionSheetDialogActivityTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <!--微信 登陆   end-->
+
+
+    </application>
+
+</manifest>

@@ -1,0 +1,83 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "itbour.onetouchshow"
+        minSdkVersion 17
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+		 signingConfigs {
+        config {
+            keyAlias 'onetouchshow'
+            keyPassword 'sjg123android'
+            storeFile file('onetouchshow.jks')
+            storePassword 'sjg123android'
+        }
+    }
+
+        /*防止x5浏览器 在x64位机器上不能使用*/
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/jniLibs']
+
+            res.srcDirs = [
+                    'src/main/res/layout/video',
+                    'src/main/res/layout',
+                    'src/main/res'
+            ]
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.config
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildToolsVersion '26.0.2'
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    //android百分比布局
+    implementation 'com.android.support:percent:26.1.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+
+    /*沉浸栏*/
+    androidTestImplementation 'com.readystatesoftware.systembartint:systembartint:1.0.4'
+    debugImplementation rootProject.ext.dependencies["canary-debug"]
+    releaseImplementation rootProject.ext.dependencies["canary-release"]
+    testImplementation rootProject.ext.dependencies["canary-release"]
+    compile 'com.ymz.statusbar:statusbarlibrary:v1.0.0'
+    implementation project(':netlibrary')
+    implementation project(':mvplibrary')
+    // compile 'com.ui:utilsview:v1.1.4'
+    implementation project(':refreshlibrary')
+    implementation project(':uilibrary')
+    implementation project(':videolibrary')
+    implementation project(':keybroadpanelswitchlib')
+    compile 'org.greenrobot:eventbus:3.0.0'
+    implementation project(':loginlibrary')
+    compile 'com.just.agentweb:agentweb:2.0.1'
+}

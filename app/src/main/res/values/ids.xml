@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--微调文字操作面板的-->
+    <!--颜色-->
+    <item name="inching_text_color" type="id"/>
+    <!--字体-->
+    <item name="inching_text_style" type="id"/>
+    <!--样式-->
+    <item name="inching_text_type" type="id"/>
+</resources>

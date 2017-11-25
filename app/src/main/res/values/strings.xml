@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">OneTouchShow</string>
+    <!--item work   layout-->
+    <string name="delete">删除</string>
+    <string name="rename">重命名</string>
+
+</resources>
