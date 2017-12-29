@@ -3,5 +3,6 @@
     android:shape="rectangle">
     <solid android:color="@color/search_lan" />
     <corners android:radius="20dip" />
+    <padding android:right="5dp"/>
     <stroke android:width="2px" android:color="@color/search_lan" />
 </shape>

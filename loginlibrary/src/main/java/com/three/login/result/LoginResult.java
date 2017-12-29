@@ -54,6 +54,10 @@ public class LoginResult {
 
     @Override
     public String toString() {
-        return "LoginResult{" + "mToken=" + mToken + ", mUserInfo=" + mUserInfo + ", mPlatform=" + mPlatform + '}';
+        return "LoginResult{" +
+                "mToken=" + mToken +
+                ", mUserInfo=" + mUserInfo +
+                ", mPlatform=" + mPlatform +
+                '}';
     }
 }

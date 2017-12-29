@@ -8,7 +8,10 @@ import com.google.gson.Gson;
 import com.lsjr.bean.EncryptBean;
 import com.lsjr.utils.Md5Utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -126,5 +129,82 @@ public class Encrypt {
         }
     }
 
+
+
+    /**
+     * 加密一组整形数字
+     *
+     * @param numbers 整形number 数组
+     * @return 加密后的文字
+     * <p>
+     * 注意:
+     * 1. 整形 number 不得超过14位
+     * 2. numbres 数组内元素不能超过五个
+     */
+    public static String shareCustomEncryptNumbers(List<Long> numbers) {
+        if ( numbers.size() <= 0 || numbers.size() > 5) {
+            return null;
+        }
+        List<Map<String,Object>> arrSEP=new ArrayList<>();
+        Map<String,Object> map1=new HashMap<>();
+        map1.put("R",26);
+        map1.put("S","v");
+        Map<String,Object> map2=new HashMap<>();
+        map2.put("R",27);
+        map2.put("S","w");
+
+        Map<String,Object> map3=new HashMap<>();
+        map3.put("R",28);
+        map3.put("S","x");
+
+        Map<String,Object> map4=new HashMap<>();
+        map4.put("R",29);
+        map4.put("S","y");
+
+        Map<String,Object> map5=new HashMap<>();
+        map5.put("R",30);
+        map5.put("S","z");
+        arrSEP.add(map1);
+        arrSEP.add(map2);
+        arrSEP.add(map3);
+        arrSEP.add(map4);
+        arrSEP.add(map5);
+
+        String strOut=new String();
+        for (int i = 0; i < numbers.size(); i++) {
+            Map<String,Object> stringObjectMap = arrSEP.get(i);
+            Integer r = (Integer) stringObjectMap.get("R");
+            String s = (String) stringObjectMap.get("S");
+            Long aLong = numbers.get(i);
+            strOut += toStringWithRadix(aLong,r);
+            strOut += s;
+        }
+        return strOut;
+
+    }
+
+
+
+    /**
+     将 十进制整形 number 转换为指定进制的字符串
+
+     @param radix 进制数 [2-62]之间
+     @return 转换后的数据
+     */
+    public static String toStringWithRadix(Long longLongValue,Integer radix){
+        if(radix <2 || radix > 62) {
+            return null;
+        }
+        // 62进制字符集
+        String [] strings = new String[]{"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+        String chars=new String();
+        Long qutient=longLongValue;
+        do {
+            long mod = qutient % radix;
+            qutient = (qutient - mod) / radix;
+            chars = strings[Integer.valueOf(String.valueOf(mod))] + chars;
+        } while (qutient > 0);
+        return chars;
+    }
 
 }

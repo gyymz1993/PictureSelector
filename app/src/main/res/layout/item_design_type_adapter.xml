@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="50dp"
+    android:layout_height="46dp"
     android:gravity="center">
 
     <TextView
         android:id="@+id/id_tv_type_name"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:background="@drawable/login_design_type_selector"
         android:gravity="center"
-        android:text="手机海报"
-
-        />
+        android:textColor="#b5b5b5"
+        android:text="手机海报" />
 
 
 </LinearLayout>

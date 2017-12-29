@@ -83,7 +83,7 @@ public class XRefreshView extends LinearLayout {
     /**
      * 当刷新完成以后，headerview和footerview被固定的时间，在这个时间以后headerview才会回弹
      */
-    private int mPinnedTime = 1000;
+    private int mPinnedTime = 0;
     private XRefreshViewState mState = null;
     /**
      * 当已无更多数据时候，需把这个变量设为true
@@ -122,6 +122,8 @@ public class XRefreshView extends LinearLayout {
 
         initWithContext(context, attrs);
         setOrientation(VERTICAL);
+
+
     }
 
     /**
@@ -321,7 +323,7 @@ public class XRefreshView extends LinearLayout {
         final int paddingBottom = getPaddingBottom();
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
-            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) child.getLayoutParams();
+            LayoutParams lp = (LayoutParams) child.getLayoutParams();
             int childWidthSpec = MeasureSpec.makeMeasureSpec(width - lp.leftMargin - lp.rightMargin - paddingLeft - paddingRight, MeasureSpec.EXACTLY);
 //                int childWidthSpec = getChildMeasureSpec(widthMeasureSpec,
 //                        paddingLeft + paddingRight,  getMeasuredWidth()-lp.leftMargin - lp.rightMargin);
@@ -517,8 +519,6 @@ public class XRefreshView extends LinearLayout {
                 isIntercepted = false;
                 mMoveForHorizontal = false;
                 break;
-                default:
-                    break;
         }
         return super.dispatchTouchEvent(ev);
     }
@@ -593,8 +593,9 @@ public class XRefreshView extends LinearLayout {
             mHasSendDownEvent = true;
             isIntercepted = false;
             final MotionEvent last = mLastMoveEvent;
-            if (last == null)
+            if (last == null) {
                 return;
+            }
             MotionEvent e = MotionEvent.obtain(last.getDownTime(),
                     last.getEventTime(), MotionEvent.ACTION_DOWN, last.getX(),
                     last.getY(), last.getMetaState());
@@ -949,7 +950,6 @@ public class XRefreshView extends LinearLayout {
             }
         }
 
-        /*重点*/
         mContentView.stopLoading(hideFooter);
     }
 
@@ -988,7 +988,7 @@ public class XRefreshView extends LinearLayout {
             stopLoadMore(true, SCROLLBACK_DURATION);
             if (!hasComplete && mEnablePullLoad && mFooterCallBack != null) {
                 mFooterCallBack.onStateRefreshing();
-                mFooterCallBack.show(true);
+//                mFooterCallBack.show(true);
             }
         }
         mContentView.setLoadComplete(hasComplete);
@@ -1015,8 +1015,7 @@ public class XRefreshView extends LinearLayout {
         startScroll(-mHolder.mOffsetY, scrolbackduration);
 //        mFooterCallBack.onStateRefreshing();
         if (mHasLoadComplete && hideFooter) {
-            //TODO 修改源码
-            mFooterCallBack.show(true);
+            mFooterCallBack.show(false);
         }
     }
 

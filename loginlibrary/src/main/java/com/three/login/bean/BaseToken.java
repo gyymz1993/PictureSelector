@@ -10,6 +10,7 @@ public class BaseToken {
 
     private String openid;
 
+
     public String getAccessToken() {
         return access_token;
     }

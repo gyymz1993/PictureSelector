@@ -2,20 +2,19 @@ package itbour.onetouchshow.fragment.design;
 
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.andview.adapter.BaseRecyclerHolder;
 import com.ys.uilibrary.rv.RecyclerTabLayout;
 import com.ys.uilibrary.vp.NoScrollViewPager;
 
@@ -23,13 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import itbour.onetouchshow.R;
-import itbour.onetouchshow.base.BaseRefreshAdapter;
-import itbour.onetouchshow.base.MyRyItemListener;
+import itbour.onetouchshow.activity.search.SearchActivity;
 import itbour.onetouchshow.bean.HomeDetailslBean;
 import itbour.onetouchshow.fragment.designlist.DesignlistFragment;
 import itbour.onetouchshow.mvp.MVPBaseFragment;
-import itbour.onetouchshow.utils.L_;
 import itbour.onetouchshow.utils.UIUtils;
 
 /**
@@ -50,24 +48,18 @@ public class DesignFragment extends MVPBaseFragment<DesignContract.View, DesignP
     NoScrollViewPager mVpHome;
     @BindView(R.id.id_recyview)
     RecyclerTabLayout idRecyview;
-    @BindView(R.id.id_recyview_type)
-    RecyclerView idRvType;
+
+    @BindView(R.id.rl_circular_shape)
+    RelativeLayout rlCircularShape;
 
     private List<Fragment> desingTypeFragment = new ArrayList<>();
     public Fragment currentTypeFragment;
-
     List<HomeDetailslBean.TypesBean> mdata;
-
-    //标题
-    List<HomeDetailslBean.TypesBean.ChildrenBean> children = null;
-
-    private TypeAdapter typeAdapter;
 
 
     @SuppressLint("ValidFragment")
     public DesignFragment(List<HomeDetailslBean.TypesBean> desingList) {
         this.mdata = desingList;
-        L_.e("size" + mdata.size());
     }
 
     /**
@@ -92,92 +84,42 @@ public class DesignFragment extends MVPBaseFragment<DesignContract.View, DesignP
     }
 
 
+    @OnClick({R.id.rl_circular_shape})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+
+            case R.id.rl_circular_shape:
+                //跳转到搜索界面
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                getActivity().startActivity(intent);
+                break;
+        }
+    }
+
+
     private void setView() {
-
-
-        //二级小分类
         if (mdata == null || mdata.size() == 0) {
-            idRvType.setVisibility(View.GONE);
             return;
         }
-        children = mdata.get(0).getChildren();
-        idRvType.setHasFixedSize(true);
-
         /**设计页面*/
         for (int i = 0; i < mdata.size(); i++) {
-            DesignlistFragment designlistFragment = new DesignlistFragment(children.get(i).getSetIds());
+            DesignlistFragment designlistFragment = new DesignlistFragment(mdata.get(i).getChildren(), mdata.get(i).getChildren().get(0).getColumn(), mdata.get(i).getChildren().get(0).getSetIds());
             desingTypeFragment.add(designlistFragment);
         }
-
         currentTypeFragment = desingTypeFragment.get(0);
         PagerAdapter pagerAdapter = new PagerAdapter(getChildFragmentManager());
         mVpHome.setNoScroll(false);
         mVpHome.setAdapter(pagerAdapter);
         mVpHome.setCurrentItem(0);
-        mVpHome.setOffscreenPageLimit(0);
+        mVpHome.setOffscreenPageLimit(desingTypeFragment.size());
 
         idRecyview.setUpWithAdapter(new IndicatorAdapter(mVpHome));
         idRecyview.setPositionThreshold(0.5f);
         idRecyview.setIndicatorColor(UIUtils.getColor(R.color.tab_selected));
         idRecyview.setIndicatorHeight(UIUtils.dip2px(2));
         idRecyview.setRecycleViewScollto(true);
-        //二级小分类
-        //设置布局管理器
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        idRvType.setLayoutManager(linearLayoutManager);
-        typeAdapter = new TypeAdapter(getContext(), children, R.layout.item_design_type_adapter);
-        idRvType.setAdapter(typeAdapter);
-        typeAdapter.setOnItemClickListener(new MyRyItemListener<HomeDetailslBean.TypesBean.ChildrenBean>() {
-            @Override
-            public void onItemSelect(HomeDetailslBean.TypesBean.ChildrenBean bean) {
-                if (currentTypeFragment != null) {
-                    DesignlistFragment designlistFragment = (DesignlistFragment) currentTypeFragment;
-                    designlistFragment.onfresh();
-                }
-            }
-        });
+
     }
-
-
-    private class TypeAdapter extends BaseRefreshAdapter<HomeDetailslBean.TypesBean.ChildrenBean> {
-
-        private int selectedPos = 0;
-
-        public TypeAdapter(Context context, List<HomeDetailslBean.TypesBean.ChildrenBean> datas, int itemLayoutId) {
-            super(context, datas, itemLayoutId);
-            selectedPos = 0;
-        }
-
-        @Override
-        public void notifyDataSetChanged(List<HomeDetailslBean.TypesBean.ChildrenBean> list) {
-            selectedPos = 0;
-            super.notifyDataSetChanged(list);
-
-        }
-
-        @Override
-        protected void convert(BaseRecyclerHolder var1, HomeDetailslBean.TypesBean.ChildrenBean childrenBean, int position) {
-            TextView textView = var1.getView(R.id.id_tv_type_name);
-            textView.setText(childrenBean.getName());
-            if (selectedPos == position) {
-                textView.setTextColor(UIUtils.getColor(R.color.tab_selected));
-            } else {
-                textView.setTextColor(UIUtils.getColor("#FFFFFFFF"));
-            }
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onItemClickListener != null) {
-                        selectedPos = position;
-                        notifyDataSetChanged();
-                        onItemClickListener.onItemSelect(childrenBean);
-                    }
-                }
-            });
-        }
-    }
-
 
     /**
      * 三个Tab
@@ -193,15 +135,7 @@ public class DesignFragment extends MVPBaseFragment<DesignContract.View, DesignP
         @Override
         public void setCurrentIndicatorPosition(int indicatorPosition) {
             super.setCurrentIndicatorPosition(indicatorPosition);
-            if (children == null || children.size() == 0) {
-                return;
-            }
             currentTypeFragment = desingTypeFragment.get(indicatorPosition);
-            children = mdata.get(indicatorPosition).getChildren();
-            if (typeAdapter != null) {
-                typeAdapter.notifyDataSetChanged(children);
-            }
-            //T_.showToastReal("点击"+indicatorPosition);
         }
 
         @Override
@@ -213,9 +147,11 @@ public class DesignFragment extends MVPBaseFragment<DesignContract.View, DesignP
         @Override
         public void onBindViewHolder(IndicatorAdapter.ViewHolder holder, int position) {
             holder.text.setText(mdata.get(position).getName());
-            ViewGroup.LayoutParams layoutParams = holder.text.getLayoutParams();
+            ViewGroup.LayoutParams layoutParams = holder.ry.getLayoutParams();
             // L_.e("WIDTH="+holder.text.getMeasuredWidth());
-            layoutParams.width = UIUtils.WH()[0] / 3;
+            if (mdata.size() > 0 && mdata.size() <= 5) {
+                layoutParams.width = UIUtils.WH()[0] / mdata.size();
+            }
             if (position == getCurrentIndicatorPosition()) {
                 holder.text.setTextColor(UIUtils.getColor(R.color.tab_selected));
             } else {
@@ -233,9 +169,12 @@ public class DesignFragment extends MVPBaseFragment<DesignContract.View, DesignP
 
             TextView text;
 
+            RelativeLayout ry;
+
             ViewHolder(View itemView) {
                 super(itemView);
                 text = (TextView) itemView.findViewById(R.id.text);
+                ry = itemView.findViewById(R.id.id_ry_root);
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

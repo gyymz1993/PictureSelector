@@ -27,18 +27,4 @@ public class NormalVideoPlayer extends StandardVideoPlayer {
         return com.shuyu.gsyvideoplayer.R.layout.video_layout_normal;
     }
 
-    @Override
-    protected void updateStartImage() {
-        if (mStartButton instanceof ImageView) {
-            ImageView imageView = (ImageView) mStartButton;
-            if (mCurrentState == CURRENT_STATE_PLAYING) {
-                imageView.setImageResource(com.shuyu.gsyvideoplayer.R.drawable.video_click_pause_selector);
-            } else if (mCurrentState == CURRENT_STATE_ERROR) {
-                imageView.setImageResource(com.shuyu.gsyvideoplayer.R.drawable.video_click_play_selector);
-            } else {
-                imageView.setImageResource(com.shuyu.gsyvideoplayer.R.drawable.video_click_play_selector);
-            }
-        }
-    }
-
 }

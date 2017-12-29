@@ -1,6 +1,5 @@
 package com.lsjr.callback;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
@@ -17,24 +16,22 @@ public abstract class EncryBeanCallBack extends BaseCallBack<EncryptReturnBean> 
         JSONObject jsonObject = JSON.parseObject(dataString);
         int code = jsonObject.getIntValue(Result.ONSUCCESS);
         final String msg = jsonObject.getString(Result.RESULT_MSG);
-        if (code==Result.CODE_SUCCESS){
+        if (code == Result.CODE_SUCCESS) {
             final String data = jsonObject.getString(Result.DATA);
-            Log.e("StringCallBack", "成功返回data---->:" + data );
-            if (!TextUtils.isEmpty(data)) {
-                mDelivery.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.e("StringCallBack", "解密数据" + data);
-                        onSuccess(data);
-                    }
-                });
-            }
-        }else {
+            Log.e("StringCallBack", "成功返回data---->:" + data);
+            mDelivery.post(new Runnable() {
+                @Override
+                public void run() {
+                    Log.e("StringCallBack", "解密数据" + data);
+                    onSuccess(data);
+                }
+            });
+        } else {
             mDelivery.post(new Runnable() {
                 @Override
                 public void run() {
                     onXError(msg);
-                    Log.e("TODO",msg+"");
+                    Log.e("TODO", msg + "");
                 }
             });
         }
@@ -46,8 +43,20 @@ public abstract class EncryBeanCallBack extends BaseCallBack<EncryptReturnBean> 
         mDelivery.post(new Runnable() {
             @Override
             public void run() {
-                Log.e("TODO",e.getMessage()+"");
-                onXError(e.getMessage());
+                Log.e("TODO", e.getMessage() + "");
+                if (e.getMessage().contains("HTTP")) {
+                    onXError("服务器不舒服");
+                } else if (e.getMessage().contains("Failed to connect to")) {
+                    onXError("请检查网络");
+                } else if (e.getMessage().contains("Unable to resolve host")) {
+                    // onXError(e.getMessage());
+                    onXError("请检查网络");
+                } else if (e.getMessage().contains("itbour.onetouchshow.App cannot be cast")) {
+                    onXError("请检查网络");
+                } else {
+                    onXError("请检查网络");
+                }
+
             }
         });
     }

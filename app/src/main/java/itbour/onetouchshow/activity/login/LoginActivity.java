@@ -5,27 +5,26 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.google.gson.Gson;
-import com.three.share.SharePlatform;
-import com.three.share.ThirdShareUtils;
-import com.three.share.listener.ShareListener;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import itbour.onetouchshow.AppConst;
 import itbour.onetouchshow.R;
 import itbour.onetouchshow.activity.main.MainActivity;
-import itbour.onetouchshow.bean.LoginBean;
+import itbour.onetouchshow.activity.web.CommWebActivity;
+import itbour.onetouchshow.base.SPCTag;
 import itbour.onetouchshow.custom.CodeButton;
 import itbour.onetouchshow.custom.DialogUtils;
-import itbour.onetouchshow.custom.ShareDialogFragment;
 import itbour.onetouchshow.listener.EdittextListener;
+import itbour.onetouchshow.listener.SoftKeyBoardListener;
 import itbour.onetouchshow.mvp.MVPBaseActivity;
 import itbour.onetouchshow.utils.RegexpUtils;
 import itbour.onetouchshow.utils.SpUtils;
@@ -52,6 +51,13 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
     EditText idEdNumber;
     @BindView(R.id.id_ed_code)
     EditText idEdCode;
+    @BindView(R.id.id_ig_colse)
+    ImageView igClose;
+    @BindView(R.id.id_user_greement)
+    TextView userAgreement;
+
+    @BindView(R.id.id_root_ry)
+    LinearLayout rootLy;
 
 
     @Override
@@ -63,17 +69,42 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (SpUtils.getInstance().getBoolean(AppConst.ISLOGIN,false)){
+//        if (SpUtils.getInstance().getBoolean(AppConst.ISLOGIN, false)) {
 //            openActivity(MainActivity.class);
+//            finish();
 //            return;
 //        }
     }
 
     @Override
     protected void afterCreate(Bundle savedInstanceState) {
-        mPresenter.postDataTest();
+       // mPresenter.postDataTest();
         setOnclickListener();
+        initSeachBar();
+        initKeyBroadListener();
 
+    }
+
+
+    private void initKeyBroadListener() {
+        SoftKeyBoardListener.setListener(LoginActivity.this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
+            @Override
+            public void keyBoardShow(int height) {
+                //  L_.i("键盘显示 高度" + height);
+                int saveHeight = SpUtils.getInt(SPCTag.KEYBROAD_HEIGHT, 0);
+                if (saveHeight == 0 || saveHeight < 300) {
+                    SpUtils.putInt(SPCTag.KEYBROAD_HEIGHT, height);
+                }
+
+            }
+
+            @Override
+            public void keyBoardHide(int height) {
+                //L_.i("键盘隐藏 高度" + height);
+                idEdNumber.clearFocus();
+                idEdCode.clearFocus();
+            }
+        });
     }
 
     public void setOnclickListener() {
@@ -81,10 +112,15 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
         idEdNumber.addTextChangedListener(new EdittextListener() {
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() != 0 && !codeButton.isOnTick()) {
+                if (s.length() != 0 && !codeButton.isOnTick() && RegexpUtils.isMobile(s.toString())) {
                     idCodeBtn.setEnabled(true);
                 } else {
                     idCodeBtn.setEnabled(false);
+                }
+                if (s.length() != 0 && idEdCode.getText().length() != 0 && RegexpUtils.isMobile(s.toString())) {
+                    idTvConfir.setEnabled(true);
+                } else {
+                    idTvConfir.setEnabled(false);
                 }
             }
         });
@@ -92,7 +128,7 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
         idEdCode.addTextChangedListener(new EdittextListener() {
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() != 0 && idEdNumber.getText().length() != 0) {
+                if (s.length() != 0 && idEdNumber.getText().length() != 0 && RegexpUtils.isMobile(idEdNumber.getText().toString())) {
                     idTvConfir.setEnabled(true);
                 } else {
                     idTvConfir.setEnabled(false);
@@ -105,7 +141,7 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
     @Override
     protected void initTitle() {
         super.initTitle();
-        setTitleText("登录页面");
+        // setTitleText("登录页面");
         testDilag();
     }
 
@@ -114,15 +150,15 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
             @Override
             public void onClick(View v) {
 
-
                 testAlertDialog();
 
             }
         }).setRightText("1111111").setRightTextOnClick(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // testOnlyOneButtonDialog();
                 // T_.showToastReal("Right");
-                ShareDialogFragment.getInstance().onShow(LoginActivity.this);
+
             }
         }).setRightTextColor(UIUtils.getColor(R.color.colorAccent)).getLeftimageView().setVisibility(View.GONE);
     }
@@ -140,9 +176,10 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
             public void onClick(View v) {
                 T_.showToastReal("我确认");
                 DialogUtils.getInstance().dismiss();
-                mPresenter.onOrderPay("",LoginActivity.this);
+              //  mPresenter.onOrderPay("", LoginActivity.this);
             }
-        }).setContext("我好看吗")).builder(LoginActivity.this);
+        }).setContext("我好看吗").setPlatform(DialogUtils.DialogPlatform.TWO_BTN)).
+                builder(LoginActivity.this);
     }
 
     public void testOnlyOneButtonDialog() {
@@ -152,7 +189,7 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
                 T_.showToastReal("只有一个哦");
                 DialogUtils.getInstance().dismiss();
             }
-        }).setContext("我好看吗")).builder(LoginActivity.this);
+        }).setContext("我好看吗").setPlatform(DialogUtils.DialogPlatform.ONE_BTN)).builder(LoginActivity.this);
     }
 
     @Override
@@ -167,7 +204,7 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
     }
 
 
-    @OnClick({R.id.id_code_btn, R.id.id_tv_confir, R.id.id_ly_wechat_login})
+    @OnClick({R.id.id_code_btn, R.id.id_tv_confir, R.id.id_ly_wechat_login, R.id.id_ig_colse, R.id.id_user_greement})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.id_code_btn:
@@ -176,25 +213,49 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
                     showProgressDialogWithText("获取验证码");
                     mPresenter.getCode(number);
                 } else {
-                    T_.showToastReal("请输入正确的手机号码");
+                    T_.showCustomToast("请输入正确的手机号码");
                 }
 
                 break;
             case R.id.id_tv_confir:
                 String number1 = idEdNumber.getText().toString();
                 String code = idEdCode.getText().toString();
-                if (!TextUtils.isEmpty(number1) && RegexpUtils.isMobile(number1) && !TextUtils.isEmpty(code)) {
-                    mPresenter.doCodeLogin(number1, code);
+                if (TextUtils.isEmpty(number1) && !RegexpUtils.isMobile(number1)) {
+                    T_.showCustomToast("请输入正确的手机号码");
+                } else if (TextUtils.isEmpty(code)) {
+                    T_.showCustomToast("请输入验证码");
                 } else {
-                    T_.showToastReal("请检查数据");
+                    mPresenter.doCodeLogin(number1, code);
                 }
                 break;
             case R.id.id_ly_wechat_login:
                 mPresenter.weichatLogin(this);
                 break;
+            case R.id.id_ig_colse:
+                finish();
+                break;
+            case R.id.id_user_greement:
+                Bundle bundle = new Bundle();
+                bundle.putString(AppConst.WEBTYPE, AppConst.TYPE_USERAGREEMENT);
+                openActivity(CommWebActivity.class, bundle);
+                break;
             default:
                 break;
         }
+    }
+
+    private void initSeachBar() {
+        idEdNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT) {
+
+                    return true;
+                }
+                return false;
+            }
+        });
+
     }
 
     @Override
@@ -212,11 +273,19 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
 
     @Override
     public void loginSuccess(String result) {
-        showProgressSuccess("登录成功");
-        SpUtils.getInstance().saveString("userInfor", result);
+        // showProgressSuccess("登录成功");
+        SpUtils.getInstance().saveString(AppConst.USER_INFO, result);
         SpUtils.getInstance().saveBoolean(AppConst.ISLOGIN, true);
-        LoginBean loginBean = new Gson().fromJson(result, LoginBean.class);
-        openActivity(MainActivity.class);
+        // LoginBean loginBean = new Gson().fromJson(result, LoginBean.class);
+        // openActivity(MainActivity.class);
+        finish();
+
+//        LogingStatusListener.getInstance().checkLogin(new LogingStatusListener.LoginForCallBack() {
+//            @Override
+//            public void callBack() {
+//                openActivity(MainActivity.class);
+//            }
+//        });
     }
 
     @Override

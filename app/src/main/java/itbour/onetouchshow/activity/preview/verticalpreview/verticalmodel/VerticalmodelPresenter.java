@@ -7,6 +7,7 @@ import com.lsjr.utils.HttpUtils;
 
 import java.util.HashMap;
 
+import itbour.onetouchshow.App;
 import itbour.onetouchshow.AppConfig;
 import itbour.onetouchshow.AppConst;
 import itbour.onetouchshow.bean.DesignListBean;
@@ -29,7 +30,7 @@ public class VerticalmodelPresenter extends BasePresenterImpl<VerticalmodelContr
         HashMap<String, Object> stringStringHashMap = new HashMap<>();
         stringStringHashMap.put("device", 610);
         stringStringHashMap.put("tmplId", id);
-        stringStringHashMap.put("userId", AppConst.TEST_USERID);
+        stringStringHashMap.put("userId", App.getUserId());
         HttpUtils.getInstance().executeGet(AppConfig.GET_THIS_MODEL_ISCOLLECT_V10, stringStringHashMap, new EncryBeanCallBack() {
             @Override
             protected void onXError(String exception) {
@@ -60,7 +61,7 @@ public class VerticalmodelPresenter extends BasePresenterImpl<VerticalmodelContr
         HashMap<String, Object> stringStringHashMap = new HashMap<>();
         stringStringHashMap.put("device", 610);
         stringStringHashMap.put("tmplId", id);
-        stringStringHashMap.put("userId", AppConst.TEST_USERID);
+        stringStringHashMap.put("userId", App.getUserId());
         int collectTag = 0;
         if (collect) {
             collectTag = 0;
@@ -85,7 +86,7 @@ public class VerticalmodelPresenter extends BasePresenterImpl<VerticalmodelContr
                 if (mvpView != null) {
                     if (finalCollectTag == 0) {
                         mvpView.unCollect();
-                        mvpView.collectSuccess("取消收藏成功");
+                        mvpView.collectSuccess("取消收藏");
                     } else {
                         mvpView.isCollect();
                         mvpView.collectSuccess("收藏成功");

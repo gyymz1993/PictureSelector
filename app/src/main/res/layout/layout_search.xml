@@ -23,20 +23,22 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/home_page_head_search" />
 
             <TextView
                 android:id="@+id/tv_homepage_hotsearch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
                 android:background="@null"
                 android:imeOptions="actionSearch"
                 android:singleLine="true"
-                android:text="大家都在搜 双十一"
+                android:hint="按场景,风格,颜色搜索"
+                android:textColorHint="@color/app_smile_text_color"
                 android:textColor="@color/gray"
-                android:textSize="12sp" />
+                android:textSize="13sp"/>
         </LinearLayout>
     </RelativeLayout>
 

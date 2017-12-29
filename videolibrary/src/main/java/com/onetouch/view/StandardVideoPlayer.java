@@ -80,6 +80,7 @@ public class StandardVideoPlayer extends GSYVideoPlayer {
 
     protected int mDialogProgressNormalColor = -11;
 
+    protected ImageView onIgStrat;
 
 
     /**
@@ -115,7 +116,34 @@ public class StandardVideoPlayer extends GSYVideoPlayer {
             mProgressBar.setThumb(mBottomShowProgressThumbDrawable);
         }
 
+        mLoadingProgressBar = findViewById(R.id.loading);
+        onIgStrat = findViewById(R.id.on_start);
+        mStartButton.setVisibility(GONE);
+        onIgStrat.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickStartIcon();
+            }
+        });
+
+        /*进度条*/
+        mLoadingProgressBar.setVisibility(GONE);
+
     }
+
+    /**
+     * 自定义一个播放按钮
+     */
+    protected void onStartImage() {
+        if (mCurrentState == CURRENT_STATE_PLAYING) {
+            onIgStrat.setImageResource(R.drawable.video_pause_click_selector);
+        } else if (mCurrentState == CURRENT_STATE_ERROR) {
+            onIgStrat.setImageResource(R.drawable.video_play_click_selector);
+        } else {
+            onIgStrat.setImageResource(R.drawable.video_play_click_selector);
+        }
+    }
+
 
     /**
      * 继承后重写可替换为你需要的布局
@@ -139,6 +167,7 @@ public class StandardVideoPlayer extends GSYVideoPlayer {
         prepareVideo();
         startDismissControlViewTimer();
     }
+
 
     /**
      * 显示wifi确定框，如需要自定义继承重写即可
@@ -165,6 +194,16 @@ public class StandardVideoPlayer extends GSYVideoPlayer {
             }
         });
         builder.create().show();
+    }
+
+    ShowCustomWifiDialog showCustomWifiDialog;
+
+    public interface ShowCustomWifiDialog {
+        void showDialog();
+    }
+
+    public void setShowCustomWifiDialog(ShowCustomWifiDialog showCustomWifiDialog) {
+        this.showCustomWifiDialog = showCustomWifiDialog;
     }
 
     /**
@@ -414,6 +453,9 @@ public class StandardVideoPlayer extends GSYVideoPlayer {
         if (mLoadingProgressBar instanceof ENDownloadView) {
             ((ENDownloadView) mLoadingProgressBar).reset();
         }
+        if (mLoadingProgressBar instanceof ENDownloadView) {
+            ((ENDownloadView) mLoadingProgressBar).reset();
+        }
     }
 
     @Override
@@ -560,6 +602,8 @@ public class StandardVideoPlayer extends GSYVideoPlayer {
     }
 
     protected void changeUiToPlayingBufferingClear() {
+
+
         Debuger.printfLog("changeUiToPlayingBufferingClear");
 
         setViewShowState(mTopContainer, INVISIBLE);
@@ -616,6 +660,8 @@ public class StandardVideoPlayer extends GSYVideoPlayer {
      * 定义开始按键显示
      */
     protected void updateStartImage() {
+        //setViewShowState(mStartButton, GONE);
+        onStartImage();
         if (mStartButton instanceof ENPlayView) {
             ENPlayView enPlayView = (ENPlayView) mStartButton;
             enPlayView.setDuration(500);

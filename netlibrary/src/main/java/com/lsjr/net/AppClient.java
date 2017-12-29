@@ -15,7 +15,15 @@ import com.lsjr.utils.NetUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Cache;
 import okhttp3.CacheControl;
@@ -39,9 +47,10 @@ class AppClient {
         if (mRetrofit == null) {
             Gson gson = new GsonBuilder().setDateFormat(DB_DATA_FORMAT).create();
             //使用 gson coverter，统一日期请求格式
-            if (BaseUrl.HTTP_ENCRYPT_BASE== null) {
+            if (BaseUrl.HTTP_ENCRYPT_BASE == null) {
                 throw new NullPointerException("请设置BaseUrl");
             }
+
             mRetrofit = new Retrofit.Builder()
                     .baseUrl(BaseUrl.HTTP_ENCRYPT_BASE)
                     .client(getOkHttpClient())
@@ -56,20 +65,96 @@ class AppClient {
         return mRetrofit;
     }
 
+    public static SSLContext acceptHttps() {
+        X509TrustManager xtm = new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(X509Certificate[] chain, String authType) {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] chain, String authType) {
+            }
+
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                X509Certificate[] x509Certificates = new X509Certificate[0];
+                return x509Certificates;
+            }
+        };
+
+        SSLContext sslContext = null;
+        try {
+            sslContext = SSLContext.getInstance("SSL");
+
+            sslContext.init(null, new TrustManager[]{xtm}, new SecureRandom());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sslContext;
+    }
+
+    public static HostnameVerifier gethosVerifier() {
+        HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        };
+        return DO_NOT_VERIFY;
+    }
+
 
     /*
     *请求路径打印
     */
-     private static final int DEFAULT_MILLISECONDS = 60000; //默认的超时时间
+    private static final int DEFAULT_MILLISECONDS = 60; //默认的超时时间
+
     private static OkHttpClient getOkHttpClient() {
         //定制OkHttp
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
         //httpClientBuilder.connectTimeout(10, TimeUnit.SECONDS)
-        httpClientBuilder.connectTimeout(DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS);
+        httpClientBuilder.connectTimeout(DEFAULT_MILLISECONDS, TimeUnit.SECONDS)
+                .writeTimeout(DEFAULT_MILLISECONDS, TimeUnit.SECONDS)
+                .readTimeout(DEFAULT_MILLISECONDS, TimeUnit.SECONDS);
         httpClientBuilder.addInterceptor(new LoggingInterceptor());
         httpClientBuilder.addNetworkInterceptor(new CacheInterceptor());
+        //允许HTTPS
+
+        X509TrustManager xtm = new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(X509Certificate[] chain, String authType) {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] chain, String authType) {
+            }
+
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                X509Certificate[] x509Certificates = new X509Certificate[0];
+                return x509Certificates;
+            }
+        };
+
+        SSLContext sslContext = null;
+        try {
+            sslContext = SSLContext.getInstance("SSL");
+
+            sslContext.init(null, new TrustManager[]{xtm}, new SecureRandom());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        };
+        httpClientBuilder.sslSocketFactory(sslContext.getSocketFactory())
+                .hostnameVerifier(DO_NOT_VERIFY);
+
         /*设置缓存*/
         File cacheFile = new File(mContext.getCacheDir(), "[缓存目录]");
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); //100Mb
@@ -78,7 +163,7 @@ class AppClient {
     }
 
 
-    private static class CacheInterceptor implements Interceptor  {
+    private static class CacheInterceptor implements Interceptor {
         @TargetApi(Build.VERSION_CODES.GINGERBREAD)
         @Override
         public Response intercept(Chain chain) throws IOException {
@@ -116,7 +201,7 @@ class AppClient {
             //这个chain里面包含了request和response，所以你要什么都可以从这里拿
             Request request = chain.request();
 //            long t1 = System.nanoTime();//请求发起的时间
-//            L_.i(String.format("发送请求 %s on %s%n%s",
+//            Log.e("AppClient",String.format("发送请求 %s on %s%n%s",
 //                    request.url(), chain.connection(), request.headers()));
             Response response = chain.proceed(request);
 //            long t2 = System.nanoTime();//收到响应的时间

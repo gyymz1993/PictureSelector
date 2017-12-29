@@ -17,6 +17,7 @@
 
         <com.andview.refreshview.view.GifView
             android:id="@+id/iv_normal_refresh_header_arrow"
+            android:visibility="gone"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_gravity="center"

@@ -4,6 +4,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.githang.statusbar.StatusBarCompat;
 
@@ -11,6 +12,7 @@ import java.lang.reflect.ParameterizedType;
 
 import itbour.onetouchshow.R;
 import itbour.onetouchshow.base.ABaseActivity;
+import itbour.onetouchshow.helper.SystemBarHelper;
 import itbour.onetouchshow.utils.UIUtils;
 
 
@@ -52,11 +54,11 @@ public abstract class MVPBaseActivity<V extends BaseView,T extends BasePresenter
                     .getGenericSuperclass())).getActualTypeArguments()[i])
                     .newInstance();
         } catch (InstantiationException e) {
-            e.printStackTrace();
+          //  e.printStackTrace();
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+          //  e.printStackTrace();
         } catch (ClassCastException e) {
-            e.printStackTrace();
+           // e.printStackTrace();
         }
         return null;
     }
@@ -71,16 +73,23 @@ public abstract class MVPBaseActivity<V extends BaseView,T extends BasePresenter
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Settings.System.canWrite(this);
         }
-        setTopLeftButton(R.drawable.ic_empty).
+        setTopLeftButton(R.mipmap.return_icon).
                 setTitleTextColor(UIUtils.getColor(R.color.white)).
-                setBackgroundColor(UIUtils.getColor(R.color.black))
-        ;
+                setBackgroundColor(UIUtils.getColor(R.color.black));
+        getToolBarView().getLeftimageView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
+        setImmersionBarBlack();
     }
 
     protected void setImmersionBarBlack(){
-
+        //import com.githang.statusbar.StatusBarCompat;
         StatusBarCompat.setStatusBarColor(this, UIUtils.getColor(R.color.apptheme));
-        //SystemBarHelper.tintStatusBar(this, UIUtils.getColor(R.color.apptheme),0);
+       // SystemBarHelper.tintStatusBar(this, UIUtils.getColor(R.color.apptheme),0);
     }
 
 
@@ -94,5 +103,13 @@ public abstract class MVPBaseActivity<V extends BaseView,T extends BasePresenter
         return 0;
     }
 
+    protected void loginResultOpen(Class<?> pClass) {
+//        LogingStatusListener.getInstance().checkLogin(new LogingStatusListener.LoginForCallBack() {
+//            @Override
+//            public void callBack() {
+//                openActivity(pClass);
+//            }
+//        });
+    }
 
 }

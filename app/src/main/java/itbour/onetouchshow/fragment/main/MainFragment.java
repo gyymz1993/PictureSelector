@@ -4,11 +4,10 @@ package itbour.onetouchshow.fragment.main;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.andview.adapter.BaseRecyclerHolder;
@@ -24,14 +23,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import itbour.onetouchshow.AppConst;
+import itbour.onetouchshow.IntentCode;
 import itbour.onetouchshow.R;
-import itbour.onetouchshow.activity.videoplay.VideoListActivity;
+import itbour.onetouchshow.activity.video.videoplay.VideoplayActivity1;
 import itbour.onetouchshow.base.BaseRefreshAdapter;
 import itbour.onetouchshow.base.BaseRefreshFragment;
 import itbour.onetouchshow.base.MyRyItemListener;
 import itbour.onetouchshow.bean.DesignListBean;
-import itbour.onetouchshow.custom.ScaleImageView;
+import itbour.onetouchshow.bean.ModelVideoBean;
 import itbour.onetouchshow.evenbus.DetailsAction;
+import itbour.onetouchshow.page.Page;
+import itbour.onetouchshow.platform.WorkPlatform;
 import itbour.onetouchshow.service.ImagePorviderService;
 import itbour.onetouchshow.utils.ImageLoader;
 import itbour.onetouchshow.utils.L_;
@@ -42,6 +44,8 @@ import itbour.onetouchshow.utils.UIUtils;
  * 邮箱 784787081@qq.com
  *
  * @author onetouch
+ *         <p>
+ *         设计
  */
 
 @SuppressLint("ValidFragment")
@@ -61,68 +65,85 @@ public class MainFragment extends BaseRefreshFragment<MainContract.View, MainPre
      * 后台数据
      */
     DesignListBean designListBean;
+    Page page;
+
 
     public MainFragment(List<Integer> ids) {
         this.mids = ids;
         EventBus.getDefault().register(this);
     }
 
-    public void onLoadData() {
-        //showLoadingView();
-        if (pullStatus == ON_REFRESH) {
-            mPageIndex = 0;
-        } else if (mPageIndex < designListBean.getTotalPage()) {
-            mPageIndex++;
+    public MainFragment() {
+        if (designListBean != null && mPageIndex >= designListBean.getTotalPage() - 1) {
+            xRefreshView.setLoadComplete(true);
+            return;
         }
-        mPresenter.getDetailsList(this, mids);
+    }
+
+    public void onLoadData() {
+        page = new Page() {
+            @Override
+            public void load(int param1, int param2) {
+                //L_.e("load"+param1);
+                mPageIndex = param1;
+                if (designListBean != null && mPageIndex >= designListBean.getTotalPage() - 1) {
+                    xRefreshView.setLoadComplete(true);
+                    return;
+                }
+                mPresenter.getDetailsList(MainFragment.this, mids);
+            }
+        };
+        pullStatus = ON_REFRESH;
+        page.loadPage(true);
     }
 
 
     @Override
     public void loadSucceed(String result) {
-        // L_.e("--------",result);
+        page.finishLoad(true);
         designListBean = new Gson().fromJson(result, DesignListBean.class);
         List<DesignListBean.ListBean> resultData = designListBean.getList();
-        DetailsAction detailsAction=new DetailsAction("main"+MainFragment.this,resultData);
-        ImagePorviderService.startService(getContext(),detailsAction);
+        DetailsAction detailsAction = new DetailsAction("main" + MainFragment.this, resultData);
+        ImagePorviderService.startService(getContext(), detailsAction);
     }
 
-    public void endNetRequse(List<DesignListBean.ListBean> data, int totalPage) {
+    public void endNetRequse(List<DesignListBean.ListBean> data) {
         showContentView();
         if (pullStatus == ON_LOAD) {
-            mdata.addAll(mdata);
+            mdata.addAll(data);
+            xRefreshView.stopLoadMore();
         } else if (pullStatus == ON_REFRESH) {
             mdata = data;
             xRefreshView.stopRefresh();
             xRefreshView.setLoadComplete(false);
         }
-        L_.e("当前页码"+mPageIndex+"/"+(totalPage-1));
-        if (mPageIndex >= totalPage-1) {
-            /*再无数据*/
+        if (designListBean != null && mPageIndex >= designListBean.getTotalPage() - 1) {
             xRefreshView.setLoadComplete(true);
-        } else {
-            xRefreshView.stopLoadMore(true);
         }
-        baseRefreshAdapter.notifyDataSetChanged(data);
+        baseRefreshAdapter.notifyDataSetChanged(mdata);
         pullStatus = 0;
     }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void dataEvent(DetailsAction detailsAction) {
-        if (!detailsAction.getSubType().equals("main"+MainFragment.this)){
+        if (!detailsAction.getSubType().equals("main" + MainFragment.this)) {
             return;
         }
-        if (designListBean==null){
-            endNetRequse(detailsAction.getData(), 0);
-        }else {
-            endNetRequse(detailsAction.getData(), designListBean.getTotalPage());
+        if (designListBean == null) {
+            endNetRequse(detailsAction.getData());
+        } else {
+            endNetRequse(detailsAction.getData());
         }
     }
 
     @Override
     public void loadFaild(String error) {
-        showNoNetworkView();
+        page.finishLoad(true);
+        // showErrorView();
+        showEmptyView(R.mipmap.icon_no_network);
+
+
     }
 
     @Override
@@ -134,17 +155,15 @@ public class MainFragment extends BaseRefreshFragment<MainContract.View, MainPre
     @Override
     protected void lazyLoad() {
         super.lazyLoad();
-        L_.e("mPresenter", mPresenter + "");
+        // L_.e("mPresenter", mPresenter + "");
         UIUtils.getHandler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                pullStatus = ON_REFRESH;
-                if (mPresenter != null && mids != null && mids.size() != 0) {
-                    onLoadData();
-                }
+                onLoadData();
             }
         }, AppConst.DELAYED_TIME);
     }
+
 
     @Override
     protected void initView() {
@@ -155,7 +174,7 @@ public class MainFragment extends BaseRefreshFragment<MainContract.View, MainPre
             public void onRefresh(boolean isPullDown) {
                 pullStatus = ON_REFRESH;
                 if (mPresenter != null) {
-                    onLoadData();
+                    page.loadPage(true);
                 }
             }
 
@@ -166,7 +185,7 @@ public class MainFragment extends BaseRefreshFragment<MainContract.View, MainPre
                     public void run() {
                         pullStatus = ON_LOAD;
                         if (mPresenter != null) {
-                            onLoadData();
+                            page.loadPage(false);
                         }
                     }
                 }, AppConst.DELAYED_TIME);
@@ -192,7 +211,13 @@ public class MainFragment extends BaseRefreshFragment<MainContract.View, MainPre
         baseRefreshAdapter.setOnItemClickListener(new MyRyItemListener() {
             @Override
             public void onItemSelect(Object o) {
-                openActivity(VideoListActivity.class);
+                DesignListBean.ListBean listBean = (DesignListBean.ListBean) o;
+//                Bundle bundle = new Bundle();
+//                bundle.putString(AppConst.DOCID, listBean.getId() + "");
+//                bundle.putString(WorkPlatform.TYPE, WorkPlatform.getWorkPlatform(WorkPlatform.MODULE));
+                Bundle bundle = IntentCode.getBundle(listBean.getId(), WorkPlatform.MODULE);
+                openActivity(VideoplayActivity1.class, bundle);
+                // JumpUtils.goToVideoPlayer(getActivity(),recyclerView,var2);
             }
         });
     }
@@ -209,14 +234,27 @@ public class MainFragment extends BaseRefreshFragment<MainContract.View, MainPre
 
     @Override
     protected void afterCreate(Bundle savedInstanceState) {
-        if (isFirstCreate){
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    showLoadingView();
-                }
-            });
+        if (isFirstCreate) {
+            showLoadingView();
         }
+    }
+
+
+    @Override
+    public void loadPageInfoSuccess(String result) {
+        L_.e(result);
+        ModelVideoBean modelPreviewInfoBean = new Gson().fromJson(result, ModelVideoBean.class);
+        //JumpUtils.goToVideoPlayer(getActivity(),recyclerView,modelPreviewInfoBean);
+        // Intent intent = new Intent(getContext(), VideoplayActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("item", modelPreviewInfoBean);
+        //  intent.putExtras(bundle);
+        openActivity(VideoplayActivity1.class, bundle);
+    }
+
+    @Override
+    public void loadPageInfoFail(String result) {
+
     }
 
     public class MainAdapter extends BaseRefreshAdapter<DesignListBean.ListBean> {
@@ -227,11 +265,14 @@ public class MainFragment extends BaseRefreshFragment<MainContract.View, MainPre
 
         @Override
         protected void convert(BaseRecyclerHolder viewHolder, DesignListBean.ListBean listBean, int position) {
-            ScaleImageView imageView = viewHolder.getView(R.id.id_ig);
+            ImageView imageView = viewHolder.getView(R.id.id_ig);
             TextView tvName = viewHolder.getView(R.id.id_tv_name);
             TextView tvCount = viewHolder.getView(R.id.id_tv_count);
-            imageView.setInitSize(listBean.getW(),listBean.getH());
-            ImageLoader.getInstance().showImage(listBean.getThumb(),imageView);
+            // imageView.setInitSize(listBean.getW(),listBean.getH());
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) imageView.getLayoutParams();
+            layoutParams.width = listBean.getW();
+            layoutParams.height = listBean.getH();
+            ImageLoader.getInstance().showImage(listBean.getThumb(), imageView);
             tvName.setText(listBean.getName());
             tvCount.setText(listBean.getUseCounts() + "人使用");
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {

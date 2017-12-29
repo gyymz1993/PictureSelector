@@ -23,6 +23,7 @@ import java.util.HashMap;
 
 import itbour.onetouchshow.App;
 import itbour.onetouchshow.AppConfig;
+import itbour.onetouchshow.AppConst;
 import itbour.onetouchshow.bean.PayInfoBean;
 import itbour.onetouchshow.mvp.BasePresenterImpl;
 import itbour.onetouchshow.utils.L_;
@@ -46,7 +47,7 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
         HttpUtils.getInstance().executeGet(AppConfig.CODE_LOIGN, stringStringHashMap, new EncryBeanCallBack() {
             @Override
             protected void onXError(String exception) {
-                T_.showToastReal(exception);
+                T_.showCustomToast(exception);
                 mvpView.loginfailed(exception);
             }
 
@@ -74,98 +75,14 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
             @Override
             protected void onXError(String exception) {
                 // mvpView.loadFaild(exception);
+                T_.showCustomToast(exception);
                 mvpView.getCodefailed();
             }
 
             @Override
             protected void onSuccess(String response) {
+                T_.showCustomToast("获取验证码成功");
                 mvpView.getCodeSuccess(true);
-            }
-        });
-    }
-
-
-    /**
-     * 去除水
-     */
-    public void toWatermark() {
-
-        L_.e(App.getLoginBean().getUserInfo().getUserId() + "");
-        HashMap<String, Object> stringObjectHashMap = new HashMap<>();
-        stringObjectHashMap.put("device", 610);
-        stringObjectHashMap.put("userId", "299188");
-        stringObjectHashMap.put("docId", "94");
-        stringObjectHashMap.put("orderType", "2");
-        //微信10  支付宝20
-        stringObjectHashMap.put("paymentPlatform", 20);
-        HttpUtils.getInstance().executeGet(AppConfig.GET_CREATEWATERMARKORDER_V1_0, stringObjectHashMap, new EncryBeanCallBack() {
-            @Override
-            protected void onXError(String exception) {
-                L_.e(exception);
-            }
-
-            @Override
-            protected void onSuccess(String response) {
-
-                L_.e("response"+response);
-                try {
-                    JSONObject jsonObject = JSON.parseObject(response);
-                    // order no  61R45L09X95P6
-                    String orderid = jsonObject.getString("orderId");
-                    String orderNo = jsonObject.getString("orderNo");
-                    L_.e("orderid  :" + orderid + "----orderNo ：" + orderNo);
-                    //onOrderPay(orderid);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-    }
-
-    public void onOrderPay(String orderId,Activity activity) {
-        HashMap<String, Object> stringObjectHashMap = new HashMap<>();
-        stringObjectHashMap.put("device", 610);
-        stringObjectHashMap.put("userId","299188");
-        stringObjectHashMap.put("orderId", 48+"");
-        HttpUtils.getInstance().executeGet(AppConfig.GETORDERPAYPARAM_V1_0, stringObjectHashMap, new EncryBeanCallBack() {
-            @Override
-            protected void onXError(String exception) {
-                L_.e(exception);
-            }
-
-            @Override
-            protected void onSuccess(String response) {
-
-                PayInfoBean payInfoBean = new Gson().fromJson(response, PayInfoBean.class);
-                if ( payInfoBean.getPaymentPlatform()==10){
-                    PayInfo payInfo=new PayInfo();
-                    payInfo.setNonceStr(payInfoBean.getWechat().getNonceStr());
-                    payInfo.setPrepayId(payInfoBean.getWechat().getPrepayId());
-                    payInfo.setTimeStamp(payInfoBean.getWechat().getTimeStamp());
-                    payInfo.setSign(payInfoBean.getWechat().getSign());
-                    ThirdPayUtils.initialize(activity).pay(PayPlatform.WxPay,payInfo, new PayListener() {
-                        @Override
-                        public void paySuccess() {
-                            T_.showToastReal("支付成功");
-                            L_.e("支付成功");
-                        }
-
-                        @Override
-                        public void payFailure(Exception e) {
-                            L_.e("支付失败");
-                            T_.showToastReal("支付失败"+e.getMessage());
-                        }
-
-                        @Override
-                        public void userCancel() {
-                            T_.showToastReal("取消支付");
-                            L_.e("取消支付");
-                        }
-                    });
-                }
-                L_.e(response);
             }
         });
     }
@@ -193,13 +110,16 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
 
 
     public void weichatLogin(Activity activity) {
-        ThirdLoginUtils.initialize(activity).login(LoginPlatform.WX, new LoginListener() {
+        ThirdLoginUtils.initialize().login(activity, LoginPlatform.WX, new LoginListener() {
             @Override
             public void loginSuccess(LoginResult result) {
                 L_.e("TAG", result.toString() + result.getUserInfo().toString());
-               // L_.e("TAG", "登录成功");
+
+                //String resultJson = "{\"mPlatform\":3,\"mToken\":{\"refresh_token\":\"4_gSyEmXbCQb2lkmGQ3_ywcqDlcX4wh-qFRu-Jwam2YW9OBxS_Sf-4X2oxjCLgOHpFfEg5xxb3IfxXs1f5DMb18emikGtxEFS4PiqSLHH-e_Y\",\"access_token\":\"4_6GPjlzzYBBpzaW5Kj1kLXAeKKsP_-i9_vnrrG6D8ClfG9cwqQfLAbrSDC-tf-SxCjAZqsUHKD1c98yoQyBogKQi95JLgfxEybbx6faNGWEM\",\"openid\":\"oL6fO1LXfOtqqKMwAkSN-EDRA7vc\"},\"mUserInfo\":{\"city\":\"Wuhan\",\"country\":\"CN\",\"province\":\"Hubei\",\"unionid\":\"o07tHv3ylDHkC4tyKYrQbi5WMGTI\",\"headImageUrl\":\"http://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIpr8mtHBHZnAIBXMqtIJSJW43EEyOiaFnxulQURUgqb7SqAwesWb0vP9JUDuMpHSnVCibF8kya4oGg/0\",\"headImageUrlLarge\":\"http://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIpr8mtHBHZnAIBXMqtIJSJW43EEyOiaFnxulQURUgqb7SqAwesWb0vP9JUDuMpHSnVCibF8kya4oGg/0\",\"nickname\":\"noop\",\"openId\":\"oL6fO1LXfOtqqKMwAkSN-EDRA7vc\",\"sex\":1}}";
+                // result = new Gson().fromJson(resultJson, LoginResult.class);
+                // L_.e("TAG", "登录成功");
                 thirdLogin(result);
-                //mPresenter.thirdLogin();
+//                mPresenter.thirdLogin();
             }
 
             @Override
@@ -211,6 +131,7 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
             public void loginFailure(Exception e) {
                 e.printStackTrace();
                 L_.e("TAG", "登录失败");
+                T_.showToastReal(e.getMessage());
             }
 
             @Override
@@ -220,13 +141,14 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
         });
     }
 
-    private void thirdLogin(LoginResult result) {
+    public void thirdLogin(LoginResult result) {
         HashMap<String, String> stringStringHashMap = new HashMap<>();
-        stringStringHashMap.put("device", 2 + "");
+        stringStringHashMap.put("device", AppConst.ANDROID_DEVICE + "");
         // stringStringHashMap.put("uuid", "EEBAF7D1EC6914A914CE95209D6BFDBB-Android");
         stringStringHashMap.put("nickName", result.getUserInfo().getNickname());
         stringStringHashMap.put("avatarUrl", result.getUserInfo().getHeadImageUrl());
-        stringStringHashMap.put("field1", result.getToken().getAccessToken());
+        //微信用户唯一标识
+        stringStringHashMap.put("field1", result.getUserInfo().getUnionid());
         stringStringHashMap.put("field2", result.getToken().getOpenid());
         stringStringHashMap.put("platform", AppConfig.YJX_THIRD_LOGIN_PLATFORM_WECHAT + "");
         //用于获取服务器通知例如服务器维护等 已加密

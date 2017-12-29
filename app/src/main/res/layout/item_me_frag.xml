@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="45dp"
     android:orientation="vertical"
-    android:background="@color/apptheme"
+    android:background="#222222"
+    android:gravity="center_vertical"
     >
 
     <RelativeLayout
+        android:layout_weight="1"
         android:id="@+id/re_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:paddingBottom="8dp"
         android:paddingLeft="15dp"
         android:paddingRight="20dp"
@@ -17,10 +19,9 @@
 
         <ImageView
             android:id="@+id/iv_photo"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:layout_centerVertical="true"
-            android:scaleType="centerCrop"
              />
 
         <TextView
@@ -38,12 +39,12 @@
             android:layout_height="15dip"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/icon_back" />
+            android:src="@mipmap/icon_more" />
     </RelativeLayout>
 
     <View
         style="@style/Line"
-        android:layout_height="1dip"
-        android:background="#FFF5F5F5"
+        android:layout_height="1dp"
+        android:background="#FF1E1E1E"
         />
 </LinearLayout>

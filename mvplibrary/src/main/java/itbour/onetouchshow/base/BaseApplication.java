@@ -4,6 +4,10 @@ import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
 
+import java.io.File;
+
+import itbour.onetouchshow.AppCache;
+import itbour.onetouchshow.ExceptionCrashHander;
 import itbour.onetouchshow.observable.NetWorkObservable;
 import itbour.onetouchshow.view.ScreenView;
 
@@ -39,9 +43,11 @@ public  class BaseApplication {
             initSputils();
             //initLeakCanary();
             initImageLoader();
+            AppCache.getInstance().initCreateAppDir();;
 
             // 初始化网络监听
             mNetWorkObservable = new NetWorkObservable(application);
+
         }
     }
 
@@ -71,9 +77,9 @@ public  class BaseApplication {
      * */
     public void initException(){
            /* 全局异常崩溃处理 */
-     //   ExceptionCrashHander.getInstance().init(mApplication);
+        ExceptionCrashHander.getInstance().init(mApplication);
         // 获取上次的崩溃信息
-      //  File crashFile = ExceptionCrashHander.getInstance().getCrashFile();
+        File crashFile = ExceptionCrashHander.getInstance().getCrashFile();
     }
 
     public static Application getApplication() {

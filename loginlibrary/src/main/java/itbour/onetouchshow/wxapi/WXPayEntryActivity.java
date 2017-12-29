@@ -36,6 +36,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 
     @Override
     public void onResp(BaseResp resp) {
+        Log.e("BaseResp",resp.errCode+"");
         ThirdPayUtils.initialize(this).handleResult(resp.getType(),resp.errCode,getIntent());
         finish();
     }

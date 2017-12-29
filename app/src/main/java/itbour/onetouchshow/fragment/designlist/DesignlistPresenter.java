@@ -9,6 +9,7 @@ import java.util.List;
 
 import itbour.onetouchshow.AppConst;
 import itbour.onetouchshow.mvp.BasePresenterImpl;
+import itbour.onetouchshow.utils.L_;
 
 /**
  * MVPPlugin
@@ -30,6 +31,7 @@ public class DesignlistPresenter extends BasePresenterImpl<DesignlistContract.Vi
         HttpUtils.getInstance().executeGet("/yjx/v1/document/getTmplSetContent_v1_0",stringStringHashMap , new EncryBeanCallBack() {
             @Override
             protected void onXError(String exception) {
+                L_.e(exception);
                 if (mvpView!=null){
                     mvpView.loadFaild(exception);
                 }
@@ -38,6 +40,7 @@ public class DesignlistPresenter extends BasePresenterImpl<DesignlistContract.Vi
             @Override
             protected void onSuccess(String response) {
                 //L_.i("response==="+response);
+                //L_.e(response);
                 if (mvpView!=null){
                     mvpView.loadSucceed(response);
                 }

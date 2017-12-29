@@ -6,21 +6,20 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.andview.refreshview.callback.IHeaderCallBack;
-import com.andview.refreshview.view.GifView;
+
 import itbour.onetouchshow.R;
 
 
 public class CustomGifHeader extends LinearLayout implements IHeaderCallBack {
-    private GifView gifView1;
-    private GifView gifView2;
     private TextView mHintTextView;
+    private ProgressBar id_pro_gress;
 
     public CustomGifHeader(Context context) {
         super(context);
-        setBackgroundColor(Color.parseColor("#FF141414"));
         initView(context);
     }
 
@@ -34,13 +33,9 @@ public class CustomGifHeader extends LinearLayout implements IHeaderCallBack {
     }
 
     private void initView(Context context) {
-        LayoutInflater.from(context).inflate(R.layout.gif_header, this);
-        gifView1 = (GifView) findViewById(R.id.gif1);
+        View view = LayoutInflater.from(context).inflate(R.layout.gif_header, this);
         mHintTextView = (TextView) findViewById(R.id.gif_header_hint);
-        gifView2 = (GifView) findViewById(R.id.gif2);
-        gifView1.setMovieResource(R.raw.vertical);
-        gifView2.setMovieResource(R.raw.horizontal);
-        gifView2.setVisibility(View.GONE);
+        id_pro_gress=findViewById(R.id.id_pro_gress);
     }
 
     @Override
@@ -59,33 +54,24 @@ public class CustomGifHeader extends LinearLayout implements IHeaderCallBack {
 
     @Override
     public void onStateNormal() {
-        mHintTextView.setText(R.string.xrefreshview_header_hint_normal);
-        gifView1.setVisibility(View.VISIBLE);
-        gifView2.setVisibility(View.GONE);
-        gifView1.setPaused(false);
-        gifView2.setPaused(true);
+        id_pro_gress.setVisibility(VISIBLE);
+        mHintTextView.setText(R.string.xrefreshview_header_hint_laoding);
     }
 
     @Override
     public void onStateReady() {
-        mHintTextView.setText(R.string.xrefreshview_header_hint_ready);
+      //  mHintTextView.setText(R.string.xrefreshview_header_hint_ready);
     }
 
     @Override
     public void onStateRefreshing() {
-        mHintTextView.setText(R.string.xrefreshview_header_hint_refreshing);
-        gifView1.setVisibility(View.GONE);
-        gifView2.setVisibility(View.VISIBLE);
-        gifView1.setPaused(true);
-        gifView2.setPaused(false);
+      //  mHintTextView.setText(R.string.xrefreshview_header_hint_refreshing);
     }
 
     @Override
     public void onStateFinish(boolean success) {
+        id_pro_gress.setVisibility(GONE);
         mHintTextView.setText(success ? R.string.xrefreshview_header_hint_loaded : R.string.xrefreshview_header_hint_loaded_fail);
-//        gifView1.setVisibility(View.VISIBLE);
-        gifView2.setVisibility(View.GONE);
-        gifView2.setPaused(true);
     }
 
     @Override

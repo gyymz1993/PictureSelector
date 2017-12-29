@@ -1,11 +1,12 @@
 package itbour.onetouchshow.custom;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.ys.uilibrary.rv.RecyclerTabLayout;
 
@@ -17,6 +18,7 @@ import itbour.onetouchshow.utils.UIUtils;
  */
 
 public class DesignTableLayout extends RecyclerTabLayout {
+
 
     public DesignTableLayout(Context context) {
         super(context);
@@ -41,30 +43,35 @@ public class DesignTableLayout extends RecyclerTabLayout {
             }
             return;
         }
-       // L_.e("onDraw"+view.getWidth());
         mRequestScrollToTab = false;
 
-        int left;
-
-        if (isLayoutRtl()) {
-            left = view.getLeft() - mScrollOffset - mIndicatorOffset-view.getPaddingLeft();
+       // L_.e("paint.getMeasuredWidth" + textView.getMeasuredWidth());
+        //L_.e("paint.getLeft" + textView.getLeft());
+        if (mAdapter.getItemCount() > 0 && mAdapter.getItemCount() <= 5) {
+            RelativeLayout root = (RelativeLayout) view;
+            RelativeLayout matchRy = (RelativeLayout) root.getChildAt(0);
+            TextView textView = (TextView) matchRy.getChildAt(0);
+           // L_.e(" mAdapter.getItemCount()"+ mAdapter.getItemCount());
+            int paddindLeft = UIUtils.WH()[0] / mAdapter.getItemCount() * mIndicatorPosition;
+           // L_.e("paint.getLeft"+paddindLeft);
+            int left;
+            if (isLayoutRtl()) {
+                left = textView.getLeft() - mScrollOffset - mIndicatorOffset + paddindLeft;
+            } else {
+                left = textView.getLeft() + mScrollOffset - mIndicatorOffset + paddindLeft;
+            }
+            int top = getHeight() - mIndicatorHeight;
+            int bottom = getHeight();
+            //新建矩形r2
+            RectF r2 = new RectF();
+            r2.left = left;
+            r2.right = left + textView.getMeasuredWidth();
+            r2.top = top;
+            r2.bottom = bottom;
+            canvas.drawRoundRect(r2, 10, 10, mIndicatorPaint);
         } else {
-            left = view.getLeft() + mScrollOffset - mIndicatorOffset+view.getPaddingLeft();
+            super.onDraw(canvas);
         }
-
-        int top = getHeight() - mIndicatorHeight;
-        int bottom = getHeight();
-        //新建矩形r2
-        @SuppressLint("DrawAllocation") RectF r2 = new RectF();
-        //测量自适应字体为80
-        r2.left = left+UIUtils.WHD()[0]/3/2-30;
-        r2.right = r2.left+65;
-        r2.top = top;
-        r2.bottom = bottom;
-       // L_.e("left"+r2.left+"----"+"right"+r2.right+"----------Uiw"+UIUtils.WHD()[0]/5);
-        canvas.drawRoundRect(r2, 10, 10, mIndicatorPaint);
-        //360   180-10  180+10
-        //720   720/2
     }
 
 }

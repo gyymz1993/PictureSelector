@@ -71,7 +71,9 @@ public abstract class ABaseActivity extends AppCompatActivity implements Network
         // 初始化数据
         initData();
 
+
     }
+
 
     protected abstract void initPresenter();
 
@@ -86,7 +88,7 @@ public abstract class ABaseActivity extends AppCompatActivity implements Network
     protected abstract void initView();
 
     /**
-     *   初始化头部
+     * 初始化头部
      */
     protected abstract void initTitle();
 
@@ -105,7 +107,7 @@ public abstract class ABaseActivity extends AppCompatActivity implements Network
         initDefaultView(layoutResID);
     }
 
-    public LinearLayout getRootView(){
+    public LinearLayout getRootView() {
         LinearLayout viewById = getLayoutInflater().inflate(R.layout.activity_a_base, null).findViewById(R.id.ll_base_root);
         return viewById;
     }
@@ -132,12 +134,12 @@ public abstract class ABaseActivity extends AppCompatActivity implements Network
     }
 
 
-    public NavigationBarView getToolBarView(){
+    public NavigationBarView getToolBarView() {
         return navigationBarView;
     }
 
 
-    public NavigationBarView rightImageViewVisible(){
+    public NavigationBarView rightImageViewVisible() {
         navigationBarView.getRightImageView().setVisibility(View.VISIBLE);
         return navigationBarView;
     }
@@ -149,7 +151,6 @@ public abstract class ABaseActivity extends AppCompatActivity implements Network
         }
         return navigationBarView;
     }
-
 
 
     @Override
@@ -209,6 +210,24 @@ public abstract class ABaseActivity extends AppCompatActivity implements Network
         networkStateView.showNoNetwork();
         networkStateView.setOnRefreshListener(this);
     }
+
+    /**
+     * 显示没有数据的布局
+     */
+    public void showEmptyView(int resId) {
+        networkStateView.showEmpty(resId,"");
+        networkStateView.setOnRefreshListener(this);
+    }
+
+
+    /**
+     * 显示没有数据的布局
+     */
+    public void showEmptyView(int resId,String text) {
+        networkStateView.showEmpty(resId,text);
+        networkStateView.setOnRefreshListener(this);
+    }
+
 
     /**
      * 显示没有数据的布局
@@ -303,8 +322,9 @@ public abstract class ABaseActivity extends AppCompatActivity implements Network
 
     /**
      * 申请权限
+     *
      * @param permissions 需要申请的权限(数组)
-     * @param listener 权限回调接口
+     * @param listener    权限回调接口
      */
     public static void requestPermissions(String[] permissions, PermissionListener listener) {
         Activity activity = ActivityUtils.getTopActivity();
@@ -428,8 +448,8 @@ public abstract class ABaseActivity extends AppCompatActivity implements Network
 
     public abstract int getFragmentContentId();
 
-    public void toastCenter(String text){
-        Toast  toast = Toast.makeText(getApplicationContext(),
+    public void toastCenter(String text) {
+        Toast toast = Toast.makeText(getApplicationContext(),
                 text, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();

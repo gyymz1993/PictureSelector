@@ -1,47 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingLeft="5dp"
-    android:paddingRight="5dp"
-    >
-
-    <itbour.onetouchshow.custom.ScaleImageView
-        android:id="@+id/id_ig"
-        android:scaleType="fitXY"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    android:paddingRight="5dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <ImageView
+            android:id="@+id/id_ig"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:orientation="vertical">
+
         <TextView
-            android:layout_marginTop="3dp"
             android:id="@+id/id_tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="玩转大片" />
+            android:layout_marginTop="3dp"
+            android:lines="1"
+            android:singleLine="true"
+            android:text="玩转大片"
+            android:textColor="@color/white" />
 
-        <TextView
-            android:id="@+id/id_tv_count"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="2222人使用"
-            android:textSize="12sp"
-            />
-    </LinearLayout>
+            android:gravity="center"
+            android:orientation="horizontal">
 
+            <TextView
+                android:id="@+id/id_tv_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="2222人使用"
+                android:textColor="@color/app_smile_text_color"
+                android:textSize="11sp" />
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/id_tv_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/shape_tag_bg"
+                android:gravity="center"
+                android:text="视频"
+                android:textColor="@color/inching_add_button"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
 
     <View
         style="@style/Line"
-        android:layout_height="2dip"
-        />
-
+        android:layout_height="5dip" />
 
 </LinearLayout>

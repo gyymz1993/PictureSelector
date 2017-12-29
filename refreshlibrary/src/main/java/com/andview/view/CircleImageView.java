@@ -47,7 +47,7 @@ public class CircleImageView extends ImageView{
     private Animation.AnimationListener mListener;
     int mShadowRadius;
 
-    CircleImageView(Context context, int color) {
+    public CircleImageView(Context context, int color) {
         super(context);
         final float density = getContext().getResources().getDisplayMetrics().density;
         final int shadowYOffset = (int) (density * Y_OFFSET);

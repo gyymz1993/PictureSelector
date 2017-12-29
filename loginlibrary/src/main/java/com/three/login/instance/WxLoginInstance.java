@@ -57,6 +57,11 @@ public class WxLoginInstance extends LoginInstance {
         super(activity, listener, fetchUserInfo);
         mLoginListener = listener;
         mIWXAPI = WXAPIFactory.createWXAPI(activity, ThirdConfigManager.CONFIG.getWxId());
+        if (!isInstall(activity)) {
+            mLoginListener.loginFailure(new Exception(INFO.NOT_INSTALL));
+            activity.finish();
+            return;
+        }
         mClient = new OkHttpClient();
         this.fetchUserInfo = fetchUserInfo;
     }
@@ -66,7 +71,6 @@ public class WxLoginInstance extends LoginInstance {
         if (mIWXAPI != null && isInstall(activity)) {
             final SendAuth.Req req = new SendAuth.Req();
             req.scope = SCOPE_USER_INFO;
-
            // req.state = String.valueOf(System.currentTimeMillis());
             req.state = SCOPE_BASE;
             mIWXAPI.sendReq(req);

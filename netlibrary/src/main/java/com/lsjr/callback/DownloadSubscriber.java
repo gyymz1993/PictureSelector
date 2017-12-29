@@ -16,7 +16,11 @@
 
 package com.lsjr.callback;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import com.lsjr.param.HttpLog;
@@ -42,8 +46,8 @@ public abstract class DownloadSubscriber<ResponseBody extends okhttp3.ResponseBo
     private static String fileSuffix = "";
     private long lastRefreshUiTime;
 
-    public DownloadSubscriber(Context context,String path, String name) {
-        this.context=context;
+    public DownloadSubscriber(Context context, String path, String name) {
+        this.context = context;
         this.path = path;
         this.name = name;
         this.lastRefreshUiTime = System.currentTimeMillis();
@@ -90,16 +94,13 @@ public abstract class DownloadSubscriber<ResponseBody extends okhttp3.ResponseBo
             name = System.currentTimeMillis() + fileSuffix;
         }
 
-        if (path == null) {
-            path = context.getExternalFilesDir(null) + File.separator + name;
-        } else {
-            File file = new File(path);
-            if (!file.exists()) {
-                file.mkdirs();
-            }
-            path = path + File.separator + name;
-            path = path.replaceAll("//", "/");
+        path = Environment.getExternalStorageDirectory() + "/OneTouchShow";
+        File file = new File(path);
+        if (!file.exists()) {
+            file.mkdirs();
         }
+        path = path + File.separator + name;
+        path = path.replaceAll("//", "/");
 
         HttpLog.i("path:-->" + path);
         try {
@@ -162,6 +163,29 @@ public abstract class DownloadSubscriber<ResponseBody extends okhttp3.ResponseBo
                 if (outputStream != null) {
                     outputStream.close();
                 }
+
+
+//                // 最后通知图库更新
+//                try {
+//                    MediaStore.Images.Media.insertImage(context.getContentResolver(), futureStudioIconFile.getAbsolutePath(), name, null);
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//                Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//                Uri uri = Uri.fromFile(futureStudioIconFile);
+//                intent.setData(uri);
+//                context.sendBroadcast(intent);
+
+                if(name.contains(".mp4")){
+                    insertIntoMediaStore(context,true,futureStudioIconFile,0);
+                }else if(name.contains(".jpg")||name.contains(".png")){
+                    insertIntoMediaStore(context,false,futureStudioIconFile,0);
+
+                }
+
+
+
+
             }
         } catch (IOException e) {
             finalonError(e);
@@ -174,7 +198,37 @@ public abstract class DownloadSubscriber<ResponseBody extends okhttp3.ResponseBo
 
 
     public abstract void onComplete(String path);
+
     public abstract void update(long bytesRead, long contentLength, boolean done);
+
     protected abstract void onXError(String exception);
 
+    //针对非系统影音资源文件夹
+    public static void insertIntoMediaStore(Context context, boolean isVideo, File saveFile, long createTime) {
+        ContentResolver mContentResolver = context.getContentResolver();
+        if (createTime == 0) {
+
+            createTime = System.currentTimeMillis();
+        }
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.MediaColumns.TITLE, saveFile.getName());
+        values.put(MediaStore.MediaColumns.DISPLAY_NAME, saveFile.getName());
+        //值一样，但是还是用常量区分对待
+        values.put(isVideo
+                ? MediaStore.Video.VideoColumns.DATE_TAKEN
+                : MediaStore.Images.ImageColumns.DATE_TAKEN, createTime);
+        values.put(MediaStore.MediaColumns.DATE_MODIFIED, System.currentTimeMillis());
+        values.put(MediaStore.MediaColumns.DATE_ADDED, System.currentTimeMillis());
+        if (!isVideo) {
+
+            values.put(MediaStore.Images.ImageColumns.ORIENTATION, 0);
+        }
+        values.put(MediaStore.MediaColumns.DATA, saveFile.getAbsolutePath());
+        values.put(MediaStore.MediaColumns.SIZE, saveFile.length());
+//        values.put(MediaStore.MediaColumns.MIME_TYPE, isVideo ? "video/mp4" : "image/jpeg");
+        //插入
+        mContentResolver.insert(isVideo
+                ? MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                : MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+    }
 }

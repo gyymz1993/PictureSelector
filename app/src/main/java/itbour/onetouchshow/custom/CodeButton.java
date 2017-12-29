@@ -11,11 +11,12 @@ import android.widget.TextView;
 import itbour.onetouchshow.utils.UIUtils;
 
 
-public class CodeButton  extends CountDownTimer {
+public class CodeButton extends CountDownTimer {
 
 
     private TextView mBtnCode;
     private boolean isOnTick;
+
     /**
      * @param millisInFuture    The number of millis in the future from the call
      *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
@@ -25,7 +26,7 @@ public class CodeButton  extends CountDownTimer {
      */
     public CodeButton(TextView button, long millisInFuture, long countDownInterval) {
         super(millisInFuture, countDownInterval);
-        this.mBtnCode=button;
+        this.mBtnCode = button;
     }
 
     public boolean isOnTick() {
@@ -35,23 +36,24 @@ public class CodeButton  extends CountDownTimer {
     @SuppressLint("SetTextI18n")
     @Override
     public void onTick(long millisUntilFinished) {
-        isOnTick=true;
+        isOnTick = true;
         mBtnCode.setClickable(false);
         mBtnCode.setEnabled(false);
-        mBtnCode.setText(millisUntilFinished/1000+"s");
+        mBtnCode.setText(millisUntilFinished / 1000 + "s" + "后再发送");
         mBtnCode.setTextColor(UIUtils.getColor("#FFFFFF"));
-        SpannableString spannableString=new SpannableString(mBtnCode.getText().toString());
-        ForegroundColorSpan span=new ForegroundColorSpan(Color.WHITE);
-        spannableString.setSpan(span,0,2, Spanned.SPAN_INCLUSIVE_INCLUSIVE); //时间设为红色
+        //mBtnCode.setTextSize(UIUtils.dp2px(12));
+        SpannableString spannableString = new SpannableString(mBtnCode.getText().toString());
+        ForegroundColorSpan span = new ForegroundColorSpan(Color.WHITE);
+        spannableString.setSpan(span, 0, 2, Spanned.SPAN_INCLUSIVE_INCLUSIVE); //时间设为红色
         mBtnCode.setText(spannableString);
     }
 
     @Override
     public void onFinish() {
-        isOnTick=false;
-        mBtnCode.setText("获取验证码");
+        isOnTick = false;
+        mBtnCode.setText("重新发送");
         mBtnCode.setClickable(true);
         mBtnCode.setEnabled(true);
-        mBtnCode.setTextColor(UIUtils.getColor("#212121"));
+        mBtnCode.setTextColor(UIUtils.getColor("#FFFFFF"));
     }
 }

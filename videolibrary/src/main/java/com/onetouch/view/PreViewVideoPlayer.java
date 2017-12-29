@@ -7,8 +7,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.onetouch.videolibrary.R;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.utils.CommonUtil;
@@ -27,11 +25,13 @@ public class PreViewVideoPlayer extends NormalVideoPlayer {
 
     private ImageView mPreView;
 
-    //是否因为用户点击
+    /**
+     * 是否因为用户点击
+     */
     private boolean mIsFromUser;
 
     //是否打开滑动预览
-    private boolean mOpenPreView = true;
+    private boolean mOpenPreView = false;
 
     private int mPreProgress = -2;
 
@@ -59,6 +59,8 @@ public class PreViewVideoPlayer extends NormalVideoPlayer {
     private void initView() {
         mPreviewLayout = (RelativeLayout) findViewById(R.id.preview_layout);
         mPreView = (ImageView) findViewById(R.id.preview_image);
+        mLoadingProgressBar =  findViewById(R.id.loading);
+        //mLoadingProgressBar.setVisibility(GONE);
     }
 
     @Override
@@ -155,17 +157,17 @@ public class PreViewVideoPlayer extends NormalVideoPlayer {
     private void showPreView(String url, long time) {
         int width = CommonUtil.dip2px(getContext(), 150);
         int height = CommonUtil.dip2px(getContext(), 100);
-        Glide.with(getContext().getApplicationContext())
-                .setDefaultRequestOptions(
-                        new RequestOptions()
-                                //这里限制了只从缓存读取
-                                .onlyRetrieveFromCache(true)
-                                .frame(1000 * time)
-                                .override(width, height)
-                                .dontAnimate()
-                                .centerCrop())
-                .load(url)
-                .into(mPreView);
+//        Glide.with(getContext().getApplicationContext())
+//                .setDefaultRequestOptions(
+//                        new RequestOptions()
+//                                //这里限制了只从缓存读取
+//                                .onlyRetrieveFromCache(true)
+//                                .frame(1000 * time)
+//                                .override(width, height)
+//                                .dontAnimate()
+//                                .centerCrop())
+//                .load(url)
+//                .into(mPreView);
     }
 
 
@@ -174,13 +176,13 @@ public class PreViewVideoPlayer extends NormalVideoPlayer {
             int time = i * getDuration() / 100;
             int width = CommonUtil.dip2px(getContext(), 150);
             int height = CommonUtil.dip2px(getContext(), 100);
-            Glide.with(getContext().getApplicationContext())
-                    .setDefaultRequestOptions(
-                            new RequestOptions()
-                                    .frame(1000 * time)
-                                    .override(width, height)
-                                    .centerCrop())
-                    .load(url).preload(width, height);
+//            Glide.with(getContext().getApplicationContext())
+//                    .setDefaultRequestOptions(
+//                            new RequestOptions()
+//                                    .frame(1000 * time)
+//                                    .override(width, height)
+//                                    .centerCrop())
+//                    .load(url).preload(width, height);
 
         }
     }
@@ -189,4 +191,36 @@ public class PreViewVideoPlayer extends NormalVideoPlayer {
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
+
+    @Override
+    protected void updateStartImage() {
+        if (mStartButton instanceof ImageView) {
+            ImageView imageView = (ImageView) mStartButton;
+            if (mCurrentState == CURRENT_STATE_PLAYING) {
+                imageView.setImageResource(R.drawable.video_pause_click_selector);
+            } else if (mCurrentState == CURRENT_STATE_ERROR) {
+                imageView.setImageResource(R.drawable.video_play_click_selector);
+            } else {
+                imageView.setImageResource(R.drawable.video_play_click_selector);
+            }
+        }
+    }
+
+    /*全屏的图片*/
+    @Override
+    public int getShrinkImageRes() {
+        if (mShrinkImageRes == -1) {
+            return R.mipmap.video_enlarge;
+        }
+        return mShrinkImageRes;
+    }
+    /*半屏的图片*/
+    @Override
+    public int getEnlargeImageRes() {
+        if (mEnlargeImageRes == -1) {
+            return R.mipmap.video_enlarge;
+        }
+        return mEnlargeImageRes;
+    }
+
 }

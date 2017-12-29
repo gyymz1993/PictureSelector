@@ -36,11 +36,14 @@ public class ClearEditTextView extends android.support.v7.widget.AppCompatEditTe
     }
 
     private void init() {
-        mClearDrawable = getResources().getDrawable(R.drawable.delete_gray);
+        mClearDrawable = getResources().getDrawable(R.mipmap.edit_cancle);
         //设置删除按钮的边界
 //        mClearDrawable.setBounds(0, 0, mClearDrawable.getIntrinsicWidth(), mClearDrawable.getIntrinsicHeight());
         //设置图片大小  padding在act的xml里设置paddingRight
-        mClearDrawable.setBounds(0, 0, 60,60);
+        mClearDrawable.setBounds(0, 0, 40, 40);
+
+        //多行帖底
+        //mClearDrawable.setBounds(0, getWidth() - 40, 40, getWidth());
         //默认隐藏删除按钮
         setClearIcon(false);
 
@@ -53,7 +56,7 @@ public class ClearEditTextView extends android.support.v7.widget.AppCompatEditTe
     /**
      * 控制EditText右边制删除按钮的显示、隐藏
      */
-    private void setClearIcon(boolean isShow) {
+    public void setClearIcon(boolean isShow) {
         Drawable rightDrawable = isShow ? mClearDrawable : null;
 
         setCompoundDrawables(getCompoundDrawables()[0], getCompoundDrawables()[1],
@@ -68,6 +71,7 @@ public class ClearEditTextView extends android.support.v7.widget.AppCompatEditTe
      */
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
+
         if (hasFocus) {
             setClearIcon(getText().length() > 0);
         } else {

@@ -11,4 +11,7 @@
     <color name="gray_text_default">#8a000000</color>
     <color name="gray">#D9D9D9</color>
 
+    <color name="apptheme">#B4181818</color>
+    <color name="inching_panel_dark">#1D1D1D</color>
+
 </resources>

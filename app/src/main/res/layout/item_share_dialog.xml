@@ -22,6 +22,8 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="QQ"
-            android:textSize="12dp" />
+            android:textSize="12dp"
+            android:textColor="#666666"
+            android:layout_marginTop="5dp"/>
     </LinearLayout>
 </LinearLayout>

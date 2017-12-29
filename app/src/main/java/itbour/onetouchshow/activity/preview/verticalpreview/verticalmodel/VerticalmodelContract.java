@@ -10,7 +10,7 @@ import itbour.onetouchshow.mvp.BaseView;
  */
 
 public class VerticalmodelContract {
-    interface View extends BaseView {
+   public interface View extends BaseView {
         void isCollect();
 
         void unCollect();
@@ -21,7 +21,7 @@ public class VerticalmodelContract {
         void collectFaild();
     }
 
-    interface  Presenter extends BasePresenter<View> {
+    public interface  Presenter extends BasePresenter<View> {
         
     }
 }

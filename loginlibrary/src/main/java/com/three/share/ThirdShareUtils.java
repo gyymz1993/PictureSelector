@@ -11,12 +11,14 @@ import android.text.TextUtils;
 
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
-import com.three.login.INFO;
 import com.three.ThirdActivityPorvider;
 import com.three.ThirdConfigManager;
+import com.three.login.INFO;
 import com.three.share.bean.ShareImageObject;
+import com.three.share.instance.DefaultShareInstance;
 import com.three.share.instance.QQShareInstance;
 import com.three.share.instance.ShareInstance;
+import com.three.share.instance.WeiboShareInstance;
 import com.three.share.instance.WxShareInstance;
 import com.three.share.listener.ShareListener;
 
@@ -52,23 +54,18 @@ public class ThirdShareUtils {
     private String mSummary;
     private String mTargetUrl;
     private static ThirdShareUtils thirdShareUtils;
-    private Activity activity;
 
-    public static ThirdShareUtils initialize(Activity activity) {
+    public static ThirdShareUtils initialize() {
         if (thirdShareUtils == null) {
             synchronized (ThirdShareUtils.class) {
-                thirdShareUtils = new ThirdShareUtils(activity);
+                thirdShareUtils = new ThirdShareUtils();
             }
         }
         return thirdShareUtils;
     }
 
-    private ThirdShareUtils(Activity activity) {
-        this.activity = activity;
-    }
 
-
-    public void action() {
+    public void action(Activity activity) {
         mShareInstance = getShareInstance(mPlatform, activity);
         // 防止之后调用 NullPointException
         if (mShareListener == null) {
@@ -95,34 +92,34 @@ public class ThirdShareUtils {
         }
     }
 
-    public void shareText(@SharePlatform.Platform int platform, String text, ShareListener listener) {
+    public void shareText(Context context,@SharePlatform.Platform int platform, String text, ShareListener listener) {
         mType = TYPE_TEXT;
         mText = text;
         mPlatform = platform;
         mShareListener = buildProxyListener(listener);
 
-        activity.startActivity(ThirdActivityPorvider.newInstance(activity, TYPE));
+        context.startActivity(ThirdActivityPorvider.newInstance(context, TYPE));
     }
 
-    public void shareImage(@SharePlatform.Platform final int platform, final String urlOrPath, ShareListener listener) {
+    public void shareImage(Context context,@SharePlatform.Platform final int platform, final String urlOrPath, ShareListener listener) {
         mType = TYPE_IMAGE;
         mPlatform = platform;
         mShareImageObject = new ShareImageObject(urlOrPath);
         mShareListener = buildProxyListener(listener);
 
-        activity.startActivity(ThirdActivityPorvider.newInstance(activity, TYPE));
+        context.startActivity(ThirdActivityPorvider.newInstance(context, TYPE));
     }
 
-    public void shareImage(@SharePlatform.Platform final int platform, final Bitmap bitmap, ShareListener listener) {
+    public void shareImage(Context context,@SharePlatform.Platform final int platform, final Bitmap bitmap, ShareListener listener) {
         mType = TYPE_IMAGE;
         mPlatform = platform;
         mShareImageObject = new ShareImageObject(bitmap);
         mShareListener = buildProxyListener(listener);
 
-        activity.startActivity(ThirdActivityPorvider.newInstance(activity, TYPE));
+        context.startActivity(ThirdActivityPorvider.newInstance(context, TYPE));
     }
 
-    public void shareMedia( @SharePlatform.Platform int platform, String title, String summary, String targetUrl, Bitmap thumb, ShareListener listener) {
+    public void shareMedia(Context context,@SharePlatform.Platform int platform, String title, String summary, String targetUrl, Bitmap thumb, ShareListener listener) {
         mType = TYPE_MEDIA;
         mPlatform = platform;
         mShareImageObject = new ShareImageObject(thumb);
@@ -131,10 +128,10 @@ public class ThirdShareUtils {
         mTitle = title;
         mShareListener = buildProxyListener(listener);
 
-        activity.startActivity(ThirdActivityPorvider.newInstance(activity, TYPE));
+        context.startActivity(ThirdActivityPorvider.newInstance(context, TYPE));
     }
 
-    public void shareMedia(@SharePlatform.Platform int platform, String title, String summary, String targetUrl, String thumbUrlOrPath, ShareListener listener) {
+    public void shareMedia(Context context,@SharePlatform.Platform int platform, String title, String summary, String targetUrl, String thumbUrlOrPath, ShareListener listener) {
         mType = TYPE_MEDIA;
         mPlatform = platform;
         mShareImageObject = new ShareImageObject(thumbUrlOrPath);
@@ -142,7 +139,7 @@ public class ThirdShareUtils {
         mTargetUrl = targetUrl;
         mTitle = title;
         mShareListener = buildProxyListener(listener);
-        activity.startActivity(ThirdActivityPorvider.newInstance(activity, TYPE));
+        context.startActivity(ThirdActivityPorvider.newInstance(context, TYPE));
     }
 
     private ShareListener buildProxyListener(ShareListener listener) {
@@ -171,12 +168,11 @@ public class ThirdShareUtils {
             case SharePlatform.QZONE:
                 return new QQShareInstance(context, ThirdConfigManager.CONFIG.getQqId());
             case SharePlatform.WEIBO:
-                //  return new WeiboShareInstance(context, ShareManager.CONFIG.getWeiboId());
+                return new WeiboShareInstance(context, ThirdConfigManager.CONFIG.getWeiboId());
             case SharePlatform.DEFAULT:
             default:
-                // return new DefaultShareInstance();
+                return new DefaultShareInstance();
         }
-        return null;
     }
 
     public void recycle() {

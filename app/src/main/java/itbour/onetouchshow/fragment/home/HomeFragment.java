@@ -25,6 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import itbour.onetouchshow.AppConst;
 import itbour.onetouchshow.R;
 import itbour.onetouchshow.activity.search.SearchActivity;
 import itbour.onetouchshow.bean.HomeDetailslBean;
@@ -37,7 +38,10 @@ import itbour.onetouchshow.utils.UIUtils;
 /**
  * MVPPlugin
  * 邮箱 784787081@qq.com
+ *
  * @author ymz
+ *         <p>
+ *         首页 玩大片
  */
 
 @SuppressLint("ValidFragment")
@@ -62,7 +66,7 @@ public class HomeFragment extends MVPBaseFragment<HomeContract.View, HomePresent
     @SuppressLint("ValidFragment")
     public HomeFragment(List<HomeDetailslBean.TypesBean> playLargeList) {
         this.mdata = playLargeList;
-        L_.e("size" + mdata.size());
+        //L_.e("size" + mdata.size());
     }
 
     public HomeFragment() {
@@ -94,14 +98,6 @@ public class HomeFragment extends MVPBaseFragment<HomeContract.View, HomePresent
                 T_.showToastReal("初始化数据失败");
                 return;
             }
-            for (int i = 0; i < children.size(); i++) {
-                L_.e("children.get(i).toString()" + children.get(i).toString());
-            }
-        }
-
-        if (children == null || children.size() == 0) {
-
-            return;
         }
 
         /**首页*/
@@ -112,7 +108,7 @@ public class HomeFragment extends MVPBaseFragment<HomeContract.View, HomePresent
         mVpHome.setNoScroll(false);
         mVpHome.setAdapter(pagerAdapter);
         mVpHome.setCurrentItem(0);
-        mVpHome.setOffscreenPageLimit(0);
+        mVpHome.setOffscreenPageLimit(fragments.size());
 
         idRecyview.setUpWithAdapter(new IndicatorAdapter(mVpHome));
         idRecyview.setPositionThreshold(0.5f);
@@ -122,10 +118,6 @@ public class HomeFragment extends MVPBaseFragment<HomeContract.View, HomePresent
 
     }
 
-
-    @OnClick(R.id.rl_circular_shape)
-    public void onViewClicked() {
-    }
 
     @OnClick({R.id.rl_circular_shape})
     public void onViewClicked(View view) {
@@ -150,13 +142,19 @@ public class HomeFragment extends MVPBaseFragment<HomeContract.View, HomePresent
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_custom_view_tab, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_design_view_tab, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             holder.text.setText(children.get(position).getName());
+            ViewGroup.LayoutParams layoutParams = holder.ry.getLayoutParams();
+//            // L_.e("WIDTH="+holder.text.getMeasuredWidth());
+//            //L_.e(" mAdapter.getItemCount()" + children.size());
+            if (children.size() > 0 && children.size() <= 5) {
+                layoutParams.width = UIUtils.WH()[0] / children.size();
+            }
             if (position == getCurrentIndicatorPosition()) {
                 holder.text.setTextColor(UIUtils.getColor(R.color.tab_selected));
             } else {
@@ -173,10 +171,12 @@ public class HomeFragment extends MVPBaseFragment<HomeContract.View, HomePresent
         class ViewHolder extends RecyclerView.ViewHolder {
 
             TextView text;
+            RelativeLayout ry;
 
             ViewHolder(View itemView) {
                 super(itemView);
                 text = (TextView) itemView.findViewById(R.id.text);
+                ry = itemView.findViewById(R.id.id_ry_root);
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

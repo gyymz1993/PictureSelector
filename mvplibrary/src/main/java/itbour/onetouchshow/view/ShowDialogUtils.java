@@ -94,12 +94,17 @@ public class ShowDialogUtils {
             iv_loadImage.setVisibility(View.VISIBLE);
             tv_loadText.setText(message);
             tv_loadText.setVisibility(View.VISIBLE);
-            mDialog.show();
+            if (mDialog!=null){
+                mDialog.show();
+            }
+
 
             mDialogContentView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mDialog.dismiss();
+                    if (mDialog!=null){
+                        mDialog.dismiss();
+                    }
                 }
             }, time);
         }

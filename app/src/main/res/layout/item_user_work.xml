@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/id_root_ly"
+    android:layout_width="wrap_content"
+    android:layout_height="80dp"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <itbour.onetouchshow.custom.RoundImageView
+        android:id="@+id/id_ig_user_work"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@mipmap/ic_launcher"
+        app:borderRadius="4dp" />
+
+    <View
+        style="@style/H_Line"
+        android:layout_margin="5dp"
+        android:background="@color/apptheme_bg"
+        android:visibility="gone" />
+
+</LinearLayout>

@@ -1,6 +1,7 @@
 package itbour.onetouchshow.bean.inching;
 
-import itbour.onetouchshow.AppConst;
+import itbour.onetouchshow.bean.inching.noppt.InchingDocStringNoPPTV10Bean;
+import itbour.onetouchshow.bean.ppt.InchingDoStringPPTV10Bean;
 
 /**
  * Created by zjl_d on 2017/11/21.
@@ -70,19 +71,5 @@ public class DocContentV10Bean {
         this.opType = opType;
     }
 
-    public void  getOpTypeVertical() {
-        if (opType == AppConst.VERTICAL_ORTYPE) {
 
-        }
-    }
-
-    /**
-     *
-     */
-    public String getOpTypeVerticalJson() {
-        if (opType == AppConst.VERTICAL_ORTYPE) {
-            return "";
-        }
-        return "";
-    }
 }

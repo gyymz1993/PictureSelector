@@ -4,7 +4,9 @@ import android.os.Bundle;
 
 import itbour.onetouchshow.R;
 import itbour.onetouchshow.activity.login.LoginActivity;
+import itbour.onetouchshow.activity.main.MainActivity;
 import itbour.onetouchshow.mvp.MVPBaseActivity;
+import itbour.onetouchshow.utils.SpUtils;
 import itbour.onetouchshow.utils.UIUtils;
 
 /**
@@ -33,9 +35,13 @@ public class SplashActivity extends MVPBaseActivity {
         UIUtils.getHandler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                openActivity(LoginActivity.class);
+                if (SpUtils.getInstance().getBoolean("isFirst", true)) {
+                    openActivity(BootVideoPalyActivity.class);
+                } else {
+                    openActivity(MainActivity.class);
+                }
                 finish();
             }
-        },2000);
+        }, 2000);
     }
 }

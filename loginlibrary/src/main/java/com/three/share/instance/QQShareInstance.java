@@ -123,7 +123,7 @@ public class QQShareInstance implements ShareInstance {
 
     @Override
     public void handleResult(Intent data) {
-        Tencent.handleResultData(data, ThirdShareUtils.initialize((Activity) context).mShareListener);
+        Tencent.handleResultData(data, ThirdShareUtils.initialize().mShareListener);
     }
 
     @Override

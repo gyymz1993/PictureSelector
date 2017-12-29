@@ -38,12 +38,16 @@ import itbour.onetouchshow.utils.UIUtils;
 @SuppressLint("ValidFragment")
 public class ModelpreviewFragment extends MVPBaseFragment<ModelpreviewContract.View, ModelpreviewPresenter> implements ModelpreviewContract.View {
 
-    public Boolean isCollect;
+    public Boolean isCollect = false;
     @BindView(R.id.rv_fragment_vertical_model_preview)
     RecyclerView recyclerView;
     Unbinder unbinder;
     public DesignListBean.ListBean listBean;
     private VerticalmodelActivity context;
+
+    public ModelpreviewFragment() {
+
+    }
 
     @SuppressLint("ValidFragment")
     public ModelpreviewFragment(VerticalmodelActivity verticalmodelActivity, DesignListBean.ListBean listBean) {
@@ -55,7 +59,7 @@ public class ModelpreviewFragment extends MVPBaseFragment<ModelpreviewContract.V
     @Override
     public void loadSucceed(String result) {
         L_.i("result===" + result);
-
+        dismissProgressDialog();
         ModelPreviewInfoBean modelPreviewInfoBean = new Gson().fromJson(result, ModelPreviewInfoBean.class);
         LinearLayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layout);
@@ -65,7 +69,7 @@ public class ModelpreviewFragment extends MVPBaseFragment<ModelpreviewContract.V
 
     @Override
     public void loadFaild(String error) {
-
+        dismissProgressDialog();
     }
 
     @Override
@@ -75,6 +79,8 @@ public class ModelpreviewFragment extends MVPBaseFragment<ModelpreviewContract.V
 
     @Override
     protected void afterCreate(Bundle savedInstanceState) {
+
+        showProgressDialogWithText("数据加载中....");
         mPresenter.loadThisPageInfo(listBean);
 
     }
@@ -148,6 +154,7 @@ public class ModelpreviewFragment extends MVPBaseFragment<ModelpreviewContract.V
             int imageHeight = image.getH();
             int imageWidth = image.getW();
 
+            L_.i("原始宽高imageWidth==="+imageWidth+"imageHeight==="+imageHeight+"thumb==="+image.getThumbs().get(0));
             float scale = imageHeight * 1.0f / imageWidth;
 
 
@@ -160,12 +167,13 @@ public class ModelpreviewFragment extends MVPBaseFragment<ModelpreviewContract.V
 
             List<String> thumbs = image.getThumbs();
             String thumb = thumbs.get(position);
-            String shrinkImageUrl = ImageLoader.getShrinkImageUrl(thumb, imageWidth,imageHeight);
+            String shrinkImageUrl = ImageLoader.getShrinkImageUrl(thumb,imageHeight);
 
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
             lp.width = imageWidth;
             lp.height = imageHeight;
             imageView.setLayoutParams(lp);
+            L_.i("imageWidth==="+imageWidth+"imageHeight==="+imageHeight+"thumb==="+thumb);
 
             //如果只有一个  居中显示
             if (getItemCount() == 1) {
@@ -175,7 +183,7 @@ public class ModelpreviewFragment extends MVPBaseFragment<ModelpreviewContract.V
             }
 
 
-            Glide.with(context).load(shrinkImageUrl).into(imageView);
+            Glide.with(context).load(shrinkImageUrl).thumbnail(0.1f).into(imageView);
         }
 
         @Override

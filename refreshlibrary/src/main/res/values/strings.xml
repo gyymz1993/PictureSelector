@@ -1,5 +1,6 @@
 <resources>
 
+    <string name="xrefreshview_header_hint_laoding">加载中...</string>
     <string name="xrefreshview_header_hint_normal">下拉刷新</string>
     <string name="xrefreshview_header_hint_ready">松开刷新数据</string>
     <string name="xrefreshview_header_hint_refreshing">正在刷新...</string>
@@ -9,7 +10,7 @@
     <string name="xrefreshview_header_last_time">上次更新时间：</string>
     <string name="xrefreshview_footer_hint_normal">加载完成</string>
     <string name="xrefreshview_footer_hint_fail">加载失败，请重试</string>
-    <string name="xrefreshview_footer_hint_complete">------没有更多了------</string>
+    <string name="xrefreshview_footer_hint_complete"><!--——————————-->没有更多了<!--————————--></string>
     <string name="xrefreshview_footer_hint_click">点击加载更多</string>
     <string name="xrefreshview_footer_hint_release">松开加载更多</string>
     <string name="xrefreshview_footer_hint_ready">松开载入更多</string>

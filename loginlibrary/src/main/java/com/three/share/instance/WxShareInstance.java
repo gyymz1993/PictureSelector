@@ -153,13 +153,13 @@ public class WxShareInstance implements ShareInstance {
             public void onResp(BaseResp baseResp) {
                 switch (baseResp.errCode) {
                     case BaseResp.ErrCode.ERR_OK:
-                        ThirdShareUtils.initialize((Activity) context).mShareListener.shareSuccess();
+                        ThirdShareUtils.initialize().mShareListener.shareSuccess();
                         break;
                     case BaseResp.ErrCode.ERR_USER_CANCEL:
-                        ThirdShareUtils.initialize((Activity) context).mShareListener.shareCancel();
+                        ThirdShareUtils.initialize().mShareListener.shareCancel();
                         break;
                     default:
-                        ThirdShareUtils.initialize((Activity) context).mShareListener.shareFailure(new Exception(baseResp.errStr));
+                        ThirdShareUtils.initialize().mShareListener.shareFailure(new Exception(baseResp.errStr));
                 }
             }
         });

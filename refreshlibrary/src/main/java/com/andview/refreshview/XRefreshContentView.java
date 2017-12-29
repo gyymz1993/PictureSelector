@@ -5,6 +5,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -35,9 +36,6 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
     private RecyclerView.OnScrollListener mOnScrollListener;
     protected LAYOUT_MANAGER_TYPE layoutManagerType;
 
-    private int mVisibleItemCount = 0;
-    private int previousTotal = 0;
-    private int mFirstVisibleItem;
     private int mLastVisibleItemPosition;
     private boolean mIsLoadingMore;
     private IFooterCallBack mFooterCallBack;
@@ -47,7 +45,6 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
      */
     private boolean mHasLoadComplete = false;
     private int mPinnedTime;
-    private XRefreshHolder mHolder;
     private XRefreshView mParent;
 
     public void setParent(XRefreshView parent) {
@@ -77,7 +74,7 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
     }
 
     public void setHolder(XRefreshHolder holder) {
-        mHolder = holder;
+        XRefreshHolder mHolder = holder;
     }
 
     /**
@@ -163,8 +160,11 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
 //                        addFooterView(true);
             } else {
                 if (mHideFooter) {
-                    mFooterCallBack.onStateReady();
-                    mFooterCallBack.callWhenNotAutoLoadMore(mParent);
+                    mFooterCallBack.onStateReady(mHasLoadComplete);
+                    if (!mHasLoadComplete) {
+                        mFooterCallBack.callWhenNotAutoLoadMore(mParent);
+                    }
+
                 }
             }
             return;
@@ -254,8 +254,10 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
                 }
                 mFooterCallBack = (IFooterCallBack) footerView;
                 if (mFooterCallBack != null) {
-                    mFooterCallBack.onStateReady();
-                    mFooterCallBack.callWhenNotAutoLoadMore(parent);
+                    mFooterCallBack.onStateReady(mHasLoadComplete);
+                    if (!mHasLoadComplete) {
+                        mFooterCallBack.callWhenNotAutoLoadMore(mParent);
+                    }
                     if (parent != null && !parent.getPullLoadEnable()) {
                         mFooterCallBack.show(false);
                     }
@@ -306,7 +308,6 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
         }
         if (!hasLoadCompleted()) {
             mIsLoadingMore = true;
-            previousTotal = mTotalItemCount;
             mFooterCallBack.onStateRefreshing();
             setState(XRefreshViewState.STATE_LOADING);
             if (mRefreshViewListener != null) {
@@ -324,7 +325,6 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
                     mRefreshViewListener.onLoadMore(false);
                 }
                 mIsLoadingMore = true;
-                previousTotal = mTotalItemCount;
                 mFooterCallBack.onStateRefreshing();
                 setState(XRefreshViewState.STATE_LOADING);
             } else {
@@ -356,7 +356,7 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
 
     private void doReadyState() {
         if (mState != XRefreshViewState.STATE_READY && !addingFooter) {
-            mFooterCallBack.onStateReady();
+            mFooterCallBack.onStateReady(mHasLoadComplete);
             setState(XRefreshViewState.STATE_READY);
         }
     }
@@ -387,6 +387,7 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
 
     public void setLoadComplete(boolean hasComplete) {
         mHasLoadComplete = hasComplete;
+        Log.e("XRefreshContentView","setLoadComplete"+mHasLoadComplete);
         if (!hasComplete) {
             mState = XRefreshViewState.STATE_NORMAL;
         }
@@ -428,8 +429,10 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
         } else {
             if (recyclerView != null && mFooterCallBack != null) {
                 if (!Utils.isRecyclerViewFullscreen(recyclerView)) {
-                    mFooterCallBack.onStateReady();
-                    mFooterCallBack.callWhenNotAutoLoadMore(mParent);
+                    mFooterCallBack.onStateReady(mHasLoadComplete);
+                    if (!mHasLoadComplete) {
+                        mFooterCallBack.callWhenNotAutoLoadMore(mParent);
+                    }
                     if (!mFooterCallBack.isShowing()) {
                         mFooterCallBack.show(true);
                     }
@@ -452,48 +455,21 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
         return null;
     }
 
-    /*加载更多后控制显示*/
     public void stopLoading(final boolean hideFooter) {
         mIsLoadingMore = false;
+//        mTotalItemCount = 0;
         if (mFooterCallBack != null) {
             mFooterCallBack.onStateFinish(hideFooter);
             if (hideFooter) {
                 if (isRecyclerView()) {
                     final RecyclerView recyclerView = (RecyclerView) child;
                     final BaseRecyclerAdapter adapter = (BaseRecyclerAdapter) recyclerView.getAdapter();
-                    if (adapter == null) {
-                        return;
-                    }
+                    if (adapter == null) return;
                     addFooterView(false);
                     resetLayout();
                     addFooterView(true);
                 }
             }
-
-//            else {
-//                child.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        resetLayout();
-//                        //TODO 修改源码  加载完成是否显示底部  加载更多后显示加载完成  在隐藏
-//                        addFooterView(false);
-//                    }
-//                }, mPinnedTime);
-//
-//                child.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (isRecyclerView()) {
-//                            final RecyclerView recyclerView = (RecyclerView) child;
-//                            final BaseRecyclerAdapter adapter = (BaseRecyclerAdapter) recyclerView.getAdapter();
-//                            if (adapter == null) return;
-//                            addFooterView(false);
-//                            resetLayout();
-//                            addFooterView(true);
-//                        }
-//                    }
-//                }, mPinnedTime*3);
-//            }
         }
         mHideFooter = hideFooter;
         mState = XRefreshViewState.STATE_FINISHED;
@@ -547,11 +523,11 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
         mTotalItemCount = layoutManager.getItemCount();
         switch (layoutManagerType) {
             case LINEAR:
-                mVisibleItemCount = layoutManager.getChildCount();
+                int mVisibleItemCount = layoutManager.getChildCount();
                 mLastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
             case GRID:
                 mLastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
-                mFirstVisibleItem = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+                int mFirstVisibleItem = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
                 break;
             case STAGGERED_GRID:
                 StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
@@ -586,7 +562,7 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
         mPreLoadCount = count;
     }
 
-    private boolean isHideFooterWhenComplete = true;
+    private boolean isHideFooterWhenComplete = false;
 
     protected void setHideFooterWhenComplete(boolean isHideFooterWhenComplete) {
         this.isHideFooterWhenComplete = isHideFooterWhenComplete;
@@ -596,6 +572,7 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
         mParent.enablePullUp(true);
         if (mState != XRefreshViewState.STATE_COMPLETE) {
             mFooterCallBack.onStateComplete();
+            mHasLoadComplete = true;
             setState(XRefreshViewState.STATE_COMPLETE);
             mPinnedTime = mPinnedTime < 1000 ? 1000 : mPinnedTime;
             if (isHideFooterWhenComplete) {
@@ -605,8 +582,7 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
                     public void run() {
                         resetLayout();
                         if (mHasLoadComplete) {
-                            //TODO 修改源码  加载所有数据后显示没有更多数据  在隐藏
-                            addFooterView(true);  //true  不隐藏底部没有更多数据
+                            addFooterView(false);
                         }
                     }
                 }, mPinnedTime);
@@ -662,7 +638,7 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
                     }
                 });
             } else {
-                adapter.removeFooterView();
+                //adapter.removeFooterView();
             }
         }
     }
@@ -692,8 +668,11 @@ public class XRefreshContentView implements OnScrollListener, OnTopRefreshTime, 
     private void dealRecyclerViewNotFullScreen() {
         RecyclerView recyclerView = (RecyclerView) child;
         if (onRecyclerViewTop() && !Utils.isRecyclerViewFullscreen(recyclerView) && child instanceof RecyclerView && mFooterCallBack != null && isFooterEnable()) {
-            mFooterCallBack.onStateReady();
-            mFooterCallBack.callWhenNotAutoLoadMore(mParent);
+
+            mFooterCallBack.onStateReady(mHasLoadComplete);
+            if (!mHasLoadComplete) {
+                mFooterCallBack.callWhenNotAutoLoadMore(mParent);
+            }
             if (!mFooterCallBack.isShowing()) {
                 mFooterCallBack.show(true);
             }

@@ -3,6 +3,7 @@ package itbour.onetouchshow.base;
 import android.content.res.Configuration;
 import android.view.View;
 
+import com.lsjr.utils.NetUtils;
 import com.onetouch.view.StandardVideoPlayer;
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder;
 import com.shuyu.gsyvideoplayer.listener.LockClickListener;
@@ -10,14 +11,19 @@ import com.shuyu.gsyvideoplayer.listener.StandardVideoAllCallBack;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
+import itbour.onetouchshow.activity.login.LoginActivity;
+import itbour.onetouchshow.custom.DialogUtils;
 import itbour.onetouchshow.mvp.BasePresenterImpl;
 import itbour.onetouchshow.mvp.BaseView;
 import itbour.onetouchshow.mvp.MVPBaseActivity;
+import itbour.onetouchshow.utils.L_;
+import itbour.onetouchshow.utils.T_;
 
 /**
  * 详情模式播放页面基础类
  */
-public abstract class BaseVideoDetailActivity<V extends BaseView, T extends BasePresenterImpl<V>> extends MVPBaseActivity<V, T> implements BaseView , StandardVideoAllCallBack {
+@Deprecated
+public abstract class BaseVideoDetailActivity<V extends BaseView, T extends BasePresenterImpl<V>> extends MVPBaseActivity<V, T> implements BaseView, StandardVideoAllCallBack {
 
     protected boolean isPlay;
 
@@ -38,7 +44,7 @@ public abstract class BaseVideoDetailActivity<V extends BaseView, T extends Base
                 @Override
                 public void onClick(View v) {
                     //直接横屏
-                    orientationUtils.resolveByClick();
+                   // orientationUtils.resolveByClick();
                     //第一个true是否需要隐藏actionbar，第二个true是否需要隐藏statusbar
                     getGSYVideoPlayer().startWindowFullscreen(BaseVideoDetailActivity.this, true, true);
 
@@ -48,11 +54,62 @@ public abstract class BaseVideoDetailActivity<V extends BaseView, T extends Base
             getGSYVideoPlayer().setLockClickListener(new LockClickListener() {
                 @Override
                 public void onClick(View view, boolean lock) {
-                    orientationUtils.setEnable(lock);
+                   // orientationUtils.setEnable(lock);
+                }
+            });
+            getGSYVideoPlayer().setShowCustomWifiDialog(new StandardVideoPlayer.ShowCustomWifiDialog() {
+                @Override
+                public void showDialog() {
+                    DialogUtils.getInstance(new DialogUtils.Builder().setTitle("")
+                            .setCancletext("取消观看")
+                            .setCancleListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    T_.showToastReal("取消");
+                                    getGSYVideoPlayer().startPlayLogic();
+                                    DialogUtils.getInstance().dismiss();
+                                }
+                            }).setConfirmText("确定观看").setConfirmListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    T_.showToastReal("我确认");
+                                    DialogUtils.getInstance().dismiss();
+                                }
+                            }).setContext("目前为非WIFI环境，继续观看会产生流量？")).builder(BaseVideoDetailActivity.this);
                 }
             });
         }
     }
+
+
+    public void startPlayVideo() {
+//        if (NetUtils.isWifi(getApplication())) {
+//            getGSYVideoPlayer().startPlayLogic();
+//        } else {
+//            DialogUtils.getInstance(new DialogUtils.Builder().setTitle("")
+//                    .setCancletext("取消观看")
+//                    .setCancleListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            // T_.showToastReal("取消");
+//
+//                            DialogUtils.getInstance().dismiss();
+//                        }
+//                    }).setConfirmText("确定观看").setConfirmListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            // T_.showToastReal("我确认");
+//                            getGSYVideoPlayer().startPlayLogic();
+//                            DialogUtils.getInstance().dismiss();
+//                        }
+//                    }).setContext("目前为非WIFI环境，继续观看会产生流量？").
+//                            setPlatform(DialogUtils.DialogPlatform.TWO_BTN))
+//                    .builder(BaseVideoDetailActivity.this);
+//        }
+
+        getGSYVideoPlayer().startPlayLogic();
+    }
+
 
     /**
      * 选择builder模式
@@ -66,9 +123,9 @@ public abstract class BaseVideoDetailActivity<V extends BaseView, T extends Base
 
     @Override
     public void onBackPressed() {
-        if (orientationUtils != null) {
-            orientationUtils.backToProtVideo();
-        }
+//        if (orientationUtils != null) {
+//            orientationUtils.backToProtVideo();
+//        }
         if (StandardGSYVideoPlayer.backFromWindowFull(this)) {
             return;
         }
@@ -77,47 +134,23 @@ public abstract class BaseVideoDetailActivity<V extends BaseView, T extends Base
 
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        getGSYVideoPlayer().getCurrentPlayer().onVideoPause();
-        isPause = true;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getGSYVideoPlayer().getCurrentPlayer().onVideoResume();
-        isPause = false;
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (isPlay) {
-            getGSYVideoPlayer().getCurrentPlayer().release();
-        }
-        if (orientationUtils != null) {
-            orientationUtils.releaseListener();
-        }
-        super.onDestroy();
-    }
-
-    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         //如果旋转了就全屏
         if (isPlay && !isPause) {
-            getGSYVideoPlayer().onConfigurationChanged(this, newConfig, orientationUtils);
+            //getGSYVideoPlayer().onConfigurationChanged(this, newConfig, orientationUtils);
         }
     }
 
     @Override
     public void onPrepared(String url, Object... objects) {
 
-        if (orientationUtils == null) {
-            throw new NullPointerException("initVideo() or initVideoBuilderMode() first");
-        }
-        //开始播放了才能旋转和全屏
-        orientationUtils.setEnable(getDetailOrientationRotateAuto());
+//        if (orientationUtils == null) {
+//            throw new NullPointerException("initVideo() or initVideoBuilderMode() first");
+//        }
+//        //开始播放了才能旋转和全屏
+//        orientationUtils.setEnable(false);
+        //orientationUtils.setEnable(getDetailOrientationRotateAuto());
         isPlay = true;
     }
 
@@ -173,9 +206,9 @@ public abstract class BaseVideoDetailActivity<V extends BaseView, T extends Base
 
     @Override
     public void onQuitFullscreen(String url, Object... objects) {
-        if (orientationUtils != null) {
-            orientationUtils.backToProtVideo();
-        }
+//        if (orientationUtils != null) {
+//            orientationUtils.backToProtVideo();
+//        }
     }
 
     @Override
@@ -242,4 +275,73 @@ public abstract class BaseVideoDetailActivity<V extends BaseView, T extends Base
      * 是否启动旋转横屏，true表示启动
      */
     public abstract boolean getDetailOrientationRotateAuto();
+
+    @Override
+    public void finish() {
+        if (isPlay) {
+            getGSYVideoPlayer().release();
+        }
+//        if (orientationUtils != null) {
+//            orientationUtils.releaseListener();
+//        }
+        super.finish();
+        L_.e("finish");
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        L_.e("onPostResume");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        L_.e("onStart");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        L_.e("onStop");
+    }
+
+
+    @Override
+    protected void onPause() {
+        if (getGSYVideoPlayer() != null) {
+            getGSYVideoPlayer().onVideoPause();
+        }
+        //getGSYVideoPlayer().onVideoPause();
+        isPause = true;
+        super.onPause();
+        L_.e("onPause");
+    }
+
+    @Override
+    protected void onResume() {
+        if (getGSYVideoPlayer() != null) {
+            getGSYVideoPlayer().onVideoResume();
+            //getGSYVideoPlayer().onVideoReset();
+        }
+
+        isPause = false;
+        super.onResume();
+        L_.e("onResume");
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        if (isPlay) {
+            getGSYVideoPlayer().release();
+        }
+//        if (orientationUtils != null) {
+//            orientationUtils.releaseListener();
+//        }
+        super.onDestroy();
+        L_.e("onDestroy");
+    }
+
+
 }

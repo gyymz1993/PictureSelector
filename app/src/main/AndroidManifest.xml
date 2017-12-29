@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="itbour.onetouchshow">
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
 
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+
+        android:icon="@mipmap/app_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/app_icon"
         android:supportsRtl="true"
         android:theme="@style/NoTitleTheme">
         <activity
@@ -28,13 +36,20 @@
         <activity
             android:name=".activity.video.videoinching.VideoinchingActivity"
             android:screenOrientation="portrait" />
+
         <activity
-            android:name=".activity.video.commoninching.CommoninchingActivity"
+            android:name=".activity.BootPageActivity"
             android:screenOrientation="portrait" />
 
-
+        <!-- android:windowSoftInputMode="adjustNothing"-->
         <activity
             android:name=".activity.search.SearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.video.clip.ClipActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.video.tableedit.TableeditActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.preview.verticalpreview.verticalmodel.VerticalmodelActivity"
@@ -43,44 +58,126 @@
             android:name=".activity.preview.verticalpreview.verticalproduct.VerticalproductActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".activity.login.LoginActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"
-            />
+        <activity
+            android:name=".activity.login.LoginActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.video.commoninching.CommoninchingActivity"
+            android:hardwareAccelerated="true"
+
+            android:screenOrientation="portrait" />
 
         <!--主页-->
         <activity
             android:name=".activity.main.MainActivity"
             android:screenOrientation="portrait" />
         <!--视频列表测试用-->
-        <activity
-            android:name=".activity.videoplay.VideoListActivity"
-            android:screenOrientation="portrait" />
         <!--我的作品-->
         <activity
             android:name=".activity.myworks.MyworksActivity"
             android:screenOrientation="portrait" />
-
-
-        <service
-            android:name="com.onetouch.service.MediaPlayerService"
-            android:enabled="false"
-            android:exported="false"
-            android:icon="@mipmap/ic_launcher" />
-
-        <service android:name=".service.ImagePorviderService" />
-
-        <!-- 监听网络状态的服务 -->
-        <service android:name=".service.NetworkStateService">
-            <intent-filter android:priority="1000">
-                <action android:name="com.text.service.NetworkStateService" />
-            </intent-filter>
-        </service>
+        <!--我的订单-->
+        <activity
+            android:name=".activity.myorder.MyCollectActivity"
+            android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.videoplay.VideoplayActivity"
+            android:name=".activity.SettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.web.MyOrderListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.userinfo.UserinfoActivity"
+            android:screenOrientation="portrait" />
+
+
+        <activity
+            android:name=".activity.searchlist.SearchListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <activity
+            android:name=".activity.web.CreateOrderActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.video.make.MakeActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.userinfo.UpdateActivity"
+            android:screenOrientation="portrait" />
+
+
+        <activity
+            android:name=".activity.video.videoedit.VideoeditActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.video.videoplay.VideoPlayPreviewActivity"
+            android:configChanges="orientation|screenLayout|uiMode|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/MyDialogStyleBottom" />
+
+
+        <service android:name=".service.ImagePorviderService" />
+        <service android:name=".service.AppInitService" />
+
+        <!-- 监听网络状态的服务 -->
+        <!--<service android:name=".service.NetworkStateService">-->
+        <!--<intent-filter android:priority="1000">-->
+        <!--<action android:name="com.text.service.NetworkStateService" />-->
+        <!--</intent-filter>-->
+        <!--</service>-->
+
+        <activity
+            android:name=".activity.video.videoplay.VideoplayActivity"
             android:configChanges="orientation|screenLayout|uiMode|screenSize"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.video.videopreview.VideoPreviewActivity"
+            android:configChanges="orientation|screenLayout|uiMode|screenSize"
+            android:screenOrientation="portrait" />
+
+
+        <!--意见反馈-->
+        <activity
+            android:name=".activity.userinfo.FeedBackActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".activity.web.CommWebActivity"
+            android:screenOrientation="portrait" />
+
+
+        <activity
+            android:name=".activity.PaySuccessActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.BootPlayAeActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.video.videopreview.VideoProudctPreviewActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.video.videoplay.VideoplayActivity1"
+            android:configChanges="orientation|screenLayout|uiMode|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.BootVideoPalyActivity"
+            android:screenOrientation="portrait" />
+
 
         <!--微信登陆   start-->
         <activity android:name="com.three.ThirdActivityPorvider" />
@@ -100,6 +197,25 @@
         </activity-alias>
         <!--微信 登陆   end-->
 
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="itbour.onetouchshow.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <!--提供共享路径-->
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_path" />
+        </provider>
+
+        <!--友盟统计-->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5a055634a40fa3658c000091" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${UMENG_CHANNEL_VALUE}" />
 
     </application>
 

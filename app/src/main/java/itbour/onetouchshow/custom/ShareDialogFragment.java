@@ -5,10 +5,8 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.andview.adapter.BaseRecyclerHolder;
+import com.lsjr.net.Encrypt;
 import com.three.share.SharePlatform;
 import com.three.share.ThirdShareUtils;
 import com.three.share.listener.ShareListener;
@@ -30,10 +29,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import itbour.onetouchshow.App;
+import itbour.onetouchshow.AppConfig;
 import itbour.onetouchshow.R;
-import itbour.onetouchshow.activity.login.LoginActivity;
 import itbour.onetouchshow.base.BaseRefreshAdapter;
 import itbour.onetouchshow.base.MyRyItemListener;
+import itbour.onetouchshow.utils.L_;
 import itbour.onetouchshow.utils.T_;
 import itbour.onetouchshow.utils.UIUtils;
 
@@ -47,8 +48,24 @@ public class ShareDialogFragment extends DialogFragment {
     @BindView(R.id.gvShare)
     RecyclerView gvShare;
     @BindView(R.id.btnCancel)
-    TextView btnCancel;
+    ImageView btnCancel;
     Unbinder unbinder;
+    private static Builder builder;
+
+    /**
+     * 初始化的时候用
+     *
+     * @return
+     */
+    public static ShareDialogFragment getInstance(Builder param) {
+        builder = param;
+        return shareDialogFragment;
+    }
+
+    public ShareDialogFragment setBuilder(Builder param) {
+        builder = param;
+        return shareDialogFragment;
+    }
 
 
     public static ShareDialogFragment getInstance() {
@@ -67,6 +84,8 @@ public class ShareDialogFragment extends DialogFragment {
         return view;
     }
 
+    List<Integer> icons = new ArrayList<>();
+
     private void initView() {
         List<String> titles = new ArrayList<>();
         titles.add("QQ好友");
@@ -74,6 +93,11 @@ public class ShareDialogFragment extends DialogFragment {
         titles.add("微信好友");
         titles.add("朋友圈");
         titles.add("微博");
+        icons.add(R.mipmap.icon_qq_friend);
+        icons.add(R.mipmap.icon_qq_space);
+        icons.add(R.mipmap.icon_wx_friend);
+        icons.add(R.mipmap.icon_wx_space);
+        icons.add(R.mipmap.icon_wb);
         gvShare.setLayoutManager(new GridLayoutManager(getActivity().getApplicationContext(), titles.size()));
         GvShareAdapter gvShareAdapter = new GvShareAdapter(getActivity().getApplication(), titles, R.layout.item_share_dialog);
         gvShare.setAdapter(gvShareAdapter);
@@ -81,24 +105,48 @@ public class ShareDialogFragment extends DialogFragment {
         gvShareAdapter.setOnItemClickListener(new MyRyItemListener<Integer>() {
             @Override
             public void onItemSelect(Integer o) {
+                List<Long> list = new ArrayList<>();
+                list.add(Long.valueOf(builder.mDocId));
+                list.add(Long.valueOf(App.getUserId()));
+                L_.e(App.getUserId()+"--------"+builder.mDocId);
+                String encrpty = Encrypt.shareCustomEncryptNumbers(list);
+                String shareUrl = AppConfig.SHARE + encrpty;
+                builder.setContext("10s帮你做大片");
+                if (builder.mTitle==null){
+                    builder.setTitle("我的作品");
+                }
+                L_.e("分享的URL"+shareUrl+"builder.mTitle"+builder.mTitle+"builder.mContext："+builder.mContext+"builder.mAvUrl"+builder.mAvUrl);
                 switch (o) {
+                    /**
+                     *  因为图片路径加载失败问题
+                     *
+                     * 倒是分享失败
+                     */
                     case 0:
-                        ThirdShareUtils.initialize(getActivity()).shareMedia(SharePlatform.QQ, "Title", "summary", "http://www.google.com", "http://shaohui.me/images/avatar.gif", shareListener);
+                        ThirdShareUtils.initialize().shareMedia(getActivity(),SharePlatform.QQ, builder.mTitle, builder.mContext, shareUrl, builder.mAvUrl, shareListener);
                         break;
                     case 1:
-                        ThirdShareUtils.initialize(getActivity()).shareMedia(SharePlatform.QZONE, "Title", "summary", "http://www.google.com", "http://shaohui.me/images/avatar.gif", shareListener);
+                        ThirdShareUtils.initialize().shareMedia(getActivity(),SharePlatform.QZONE, builder.mTitle, builder.mContext, shareUrl, builder.mAvUrl, shareListener);
                         break;
                     case 2:
-                        ThirdShareUtils.initialize(getActivity()).shareMedia(SharePlatform.WX, "Title", "summary", "http://www.google.com", "http://shaohui.me/images/avatar.gif", shareListener);
+                        ThirdShareUtils.initialize().shareMedia(getActivity(),SharePlatform.WX, builder.mTitle, builder.mContext, shareUrl, builder.mAvUrl, shareListener);
                         break;
                     case 3:
-                        ThirdShareUtils.initialize(getActivity()).shareMedia(SharePlatform.WX_TIMELINE, "Title", "summary", "http://www.google.com", "http://shaohui.me/images/avatar.gif", shareListener);
+                        ThirdShareUtils.initialize().shareMedia(getActivity(),SharePlatform.WX_TIMELINE, builder.mTitle, builder.mContext, shareUrl, builder.mAvUrl, shareListener);
                         break;
                     case 4:
+                        ThirdShareUtils.initialize().shareMedia(getActivity(),SharePlatform.WEIBO, builder.mTitle, builder.mContext, shareUrl, builder.mAvUrl, shareListener);
                         break;
                     default:
                         break;
                 }
+                dismiss();
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 dismiss();
             }
         });
@@ -135,13 +183,14 @@ public class ShareDialogFragment extends DialogFragment {
         protected void convert(BaseRecyclerHolder var1, String var2, int var3) {
             TextView textView = var1.getView(R.id.id_tv_title);
             ImageView imageView = var1.getView(R.id.id_tg_icon);
+            imageView.setImageResource(icons.get(var3));
             ViewGroup.LayoutParams layoutParams = textView.getLayoutParams();
             layoutParams.width = UIUtils.WH()[0] / mdata.size();
             textView.setText(var2);
             var1.getView(R.id.ly_root).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onItemClickListener!=null){
+                    if (onItemClickListener != null) {
                         onItemClickListener.onItemSelect(var3);
                     }
                 }
@@ -172,5 +221,33 @@ public class ShareDialogFragment extends DialogFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    public static class Builder {
+        private String mTitle;
+        private String mContext;
+        private String mDocId;
+        private String mAvUrl;
+
+
+        public Builder setTitle(String title) {
+            mTitle = title;
+            return this;
+        }
+
+        public Builder setContext(String context) {
+            mContext = context;
+            return this;
+        }
+
+        public Builder setDocId(String docId) {
+            mDocId = docId;
+            return this;
+        }
+
+        public Builder setAvUrl(String avUrl) {
+            mAvUrl = avUrl;
+            return this;
+        }
     }
 }

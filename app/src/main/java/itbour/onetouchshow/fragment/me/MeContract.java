@@ -12,7 +12,8 @@ import itbour.onetouchshow.mvp.BaseView;
 
 public class MeContract {
     interface View extends BaseView {
-        
+        void loaduserDetailSuccess(String string);
+        void loaduserDetailFail(String string);
     }
 
     interface  Presenter extends BasePresenter<View> {

@@ -3,41 +3,41 @@
     xmlns:app="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/apptheme"
+    android:background="#141414"
     android:orientation="vertical"
     app:ignore="NamespaceTypo">
+
+
+    <include layout="@layout/layout_search" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#383838"
-        >
+        android:background="#19191c">
 
         <itbour.onetouchshow.custom.DesignTableLayout
+            android:background="#141414"
             android:id="@+id/id_recyview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:scrollbars="none"
             app:rtl_tabIndicatorColor="@color/idselcte"
-            app:rtl_tabMinWidth = "120dip"
-            app:rtl_tabMaxWidth = " 264dp"
-            app:rtl_tabPaddingStart="25dp"
+            app:rtl_tabMaxWidth=" 264dp"
+            app:rtl_tabMinWidth="120dip"
             app:rtl_tabPaddingEnd="25dp"
-            />
+            app:rtl_tabPaddingStart="25dp" />
 
     </LinearLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/id_recyview_type"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="50dp"/>
-
+        android:layout_height="1px"
+        android:background="#222222"/>
     <com.ys.uilibrary.vp.NoScrollViewPager
-        android:paddingTop="5dp"
         android:id="@+id/id_vp_home"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:paddingTop="5dp" />
 
 
 </LinearLayout>

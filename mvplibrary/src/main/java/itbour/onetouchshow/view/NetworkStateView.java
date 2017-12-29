@@ -41,11 +41,11 @@ public class NetworkStateView extends LinearLayout {
     private String mErrorText;
 
     private int mNoNetworkViewId;
-    private int mNoNetworkImageId=R.drawable.no_network;
+    private int mNoNetworkImageId = R.drawable.ic_no_network;
     private String mNoNetworkText;
 
     private int mEmptyViewId;
-    private int mEmptyImageId= R.drawable.no_context_icon;
+    private int mEmptyImageId = R.drawable.ic_no_data;
     private String mEmptyText;
 
     private int mRefreshViewId;
@@ -101,7 +101,7 @@ public class NetworkStateView extends LinearLayout {
 
         mInflater = LayoutInflater.from(context);
         params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        setBackgroundColor(UIUtils.getColor(R.color.white));
+        //setBackgroundColor(UIUtils.getColor(R.color.white));
     }
 
     @Override
@@ -191,6 +191,8 @@ public class NetworkStateView extends LinearLayout {
                     }
                 });
             }
+             /*没有数据不需要刷新*/
+            networkRefreshView.setVisibility(GONE);
             addView(mNoNetworkView, 0, params);
         }
         showViewByState(mCurrentState);
@@ -200,6 +202,14 @@ public class NetworkStateView extends LinearLayout {
      * 显示无数据状态
      */
     public void showEmpty() {
+        showEmpty(mEmptyImageId,mEmptyText);
+    }
+
+
+    /**
+     * 显示无数据状态
+     */
+    public void showEmpty(int resId,String mText) {
         mCurrentState = STATE_EMPTY;
         if (null == mEmptyView) {
             mEmptyView = mInflater.inflate(mEmptyViewId, null);
@@ -207,9 +217,9 @@ public class NetworkStateView extends LinearLayout {
             TextView emptyText = (TextView) mEmptyView.findViewById(R.id.empty_text);
             ImageView emptyRefreshView = (ImageView) mEmptyView.findViewById(R.id.refresh_view);
 
-            image(emptyImage, mEmptyImageId);
+            image(emptyImage, resId);
 
-            text(emptyText, mEmptyText);
+            text(emptyText, mText);
 
             image(emptyRefreshView, mRefreshViewId);
 
@@ -223,10 +233,13 @@ public class NetworkStateView extends LinearLayout {
                     }
                 });
             }
+            /*没有数据不需要刷新*/
+            emptyRefreshView.setVisibility(GONE);
             addView(mEmptyView, 0, params);
         }
         showViewByState(mCurrentState);
     }
+
 
     private void showViewByState(int state) {
 
@@ -259,7 +272,7 @@ public class NetworkStateView extends LinearLayout {
     private void text(TextView view, String str) {
         if (null != view && !TextUtils.isEmpty(str)) {
             view.setText(str);
-            view.setTextColor(mTextColor);
+            //view.setTextColor(mTextColor);
             view.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
         }
     }

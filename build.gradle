@@ -8,10 +8,9 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0'
-
         /*butterknife  start*/
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.5.1'
-        classpath 'com.novoda:bintray-release:0.5.0'
+        //classpath 'com.novoda:bintray-release:0.5.0'
         /*butterknife end*/
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -23,10 +22,9 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven {
-            //url "https://jitpack.io"
-            url "https://dl.bintray.com/gyymz1993/maven/"
-        }
+        maven { url "https://dl.bintray.com/gyymz1993/maven/" }
+       // maven { url "https://dl.bintray.com/thelasterstar/maven/" }
+        //maven { url "https://jitpack.io" }
     }
 }
 

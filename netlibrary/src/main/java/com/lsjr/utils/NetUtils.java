@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 
 /**
  * 描述：网络辅助类
@@ -51,6 +53,57 @@ public class NetUtils {
         return cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI;
 
     }
+
+
+    public static Boolean is4G(Context context) {
+        String strNetworkType = "";
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                strNetworkType = "WIFI";
+                return false;
+            } else if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+                String _strSubTypeName = networkInfo.getSubtypeName();
+                int networkType = networkInfo.getSubtype();
+                switch (networkType) {
+                    case TelephonyManager.NETWORK_TYPE_GPRS:
+                    case TelephonyManager.NETWORK_TYPE_EDGE:
+                    case TelephonyManager.NETWORK_TYPE_CDMA:
+                    case TelephonyManager.NETWORK_TYPE_1xRTT:
+                    case TelephonyManager.NETWORK_TYPE_IDEN: //api<8 : replace by 11
+                    case TelephonyManager.NETWORK_TYPE_UMTS:
+                    case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                    case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                    case TelephonyManager.NETWORK_TYPE_HSDPA:
+                    case TelephonyManager.NETWORK_TYPE_HSUPA:
+                    case TelephonyManager.NETWORK_TYPE_HSPA:
+                    case TelephonyManager.NETWORK_TYPE_EVDO_B: //api<9 : replace by 14
+                    case TelephonyManager.NETWORK_TYPE_EHRPD:  //api<11 : replace by 12
+                    case TelephonyManager.NETWORK_TYPE_HSPAP:  //api<13 : replace by 15
+                    case TelephonyManager.NETWORK_TYPE_LTE:    //api<11 : replace by 13
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+//    /**
+//     * 判断是否是4G连接
+//     */
+//    public static boolean is4G(Context context) {
+//        ConnectivityManager cm = (ConnectivityManager) context
+//                .getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//        if (cm == null)
+//            return false;
+//        return cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_VPN;
+//
+//    }
+
 
     /**
      * 打开网络设置界面

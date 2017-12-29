@@ -1,69 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="66dp"
-    android:background="@color/apptheme"
+    android:layout_height="65dp"
+    android:background="@color/inching_vertical_create_doc"
     android:orientation="horizontal">
 
     <LinearLayout
         android:id="@+id/id_ry_down"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@mipmap/ic_launcher" />
+            android:layout_width="25dp"
+            android:layout_height="15dp"
+            android:layout_weight="1"
+            android:src="@mipmap/icon_down" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:drawablePadding="2dp"
             android:text="下载"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="12sp" />
 
     </LinearLayout>
 
 
     <LinearLayout
         android:id="@+id/id_ry_share"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:layout_toRightOf="@id/id_ry_down"
         android:gravity="center"
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@mipmap/ic_launcher" />
+            android:layout_width="27dp"
+            android:layout_height="17dp"
+            android:layout_weight="1"
+            android:src="@mipmap/icon_share" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:text="分享"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="12sp" />
     </LinearLayout>
 
 
     <TextView
+        android:id="@+id/id_tv_gotoremovewater"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="10dp"
         android:layout_toRightOf="@id/id_ry_share"
-        android:background="@drawable/login_code_shape_unenabled"
+        android:background="@drawable/water_circle_shape"
         android:gravity="center"
-        android:text="去水印"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="16sp" />
 
 </RelativeLayout>

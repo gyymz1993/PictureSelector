@@ -12,10 +12,6 @@ import android.os.IBinder;
 import itbour.onetouchshow.utils.T_;
 
 
-/**
- * 监听网络状态改变的服务
- * Created by zhuguohui on 2017/1/18.
- */
 
 public class NetworkStateService extends Service {
 
@@ -71,7 +67,7 @@ public class NetworkStateService extends Service {
                     // NetworkInfo为空或者是不可用的情况下
                     networkStatus = 0;
                     // Toast.makeText(context, "没有可用网络!\n请连接网络后刷新本界面", Toast.LENGTH_SHORT).show();
-                    T_.showToastReal("网络不可用");
+                    //T_.showToastReal("网络不可用");
 
                 }
             }

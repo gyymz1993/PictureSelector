@@ -26,26 +26,25 @@ public class ThirdLoginUtils {
     private int mPlatform;
     private boolean isFetchUserInfo;
     public static final int TYPE = 799;
-    private Activity activity;
     private static ThirdLoginUtils thirdLoginUtils;
 
-    public static ThirdLoginUtils initialize(Activity context) {
+    public static ThirdLoginUtils initialize() {
         if (thirdLoginUtils == null) {
             synchronized (ThirdLoginUtils.class) {
-                thirdLoginUtils = new ThirdLoginUtils(context);
+                thirdLoginUtils = new ThirdLoginUtils();
             }
         }
         return thirdLoginUtils;
     }
 
 
-    private ThirdLoginUtils(Activity activity) {
-        this.activity = activity;
+    private ThirdLoginUtils() {
+
     }
 
 
-    public void login(@LoginPlatform.Platform int platform, LoginListener listener) {
-        login(activity, platform, listener, true);
+    public void login(Context context, @LoginPlatform.Platform int platform, LoginListener listener) {
+        login(context, platform, listener, true);
     }
 
     private void login(Context context, @LoginPlatform.Platform int platform, LoginListener listener, boolean fetchUserInfo) {
@@ -55,7 +54,12 @@ public class ThirdLoginUtils {
         context.startActivity(ThirdActivityPorvider.newInstance(context, TYPE));
     }
 
-    public void action() {
+    public void action(Activity activity) {
+        // 防止之后调用 NullPointException
+        if (mLoginListener == null) {
+            activity.finish();
+            return;
+        }
         switch (mPlatform) {
             case LoginPlatform.WX:
                 mLoginInstance = new WxLoginInstance(activity, mLoginListener, isFetchUserInfo);

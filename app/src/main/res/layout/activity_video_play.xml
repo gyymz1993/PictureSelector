@@ -3,28 +3,69 @@
     android:id="@+id/activity_detail_player"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/apptheme">
+    android:background="@color/apptheme"
+    >
 
-
-    <com.onetouch.view.PreViewVideoPlayer
-        android:id="@+id/detail_player"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:layout_marginTop="120dp" />
+        android:layout_marginTop="50dp" >
+
+        <com.onetouch.view.PreViewVideoPlayer
+            android:background="@color/black"
+            android:id="@+id/detail_player"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/id_tv_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="点击播放"
+            android:textColor="@color/white"
+            android:drawableLeft="@mipmap/video_gb_hint"
+            android:drawablePadding="5dp"
+            android:background="@drawable/video_shape_play"
+            />
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/error"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginTop="50dp" >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="加载重试.."
+            android:textColor="@color/white"
+            >
+        </TextView>
+    </LinearLayout>
+
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginTop="375dp"
+        android:layout_marginTop="300dp"
         android:background="@color/apptheme">
 
         <LinearLayout
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
@@ -36,28 +77,34 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/id_user_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="人使用"
-                    android:textColor="@color/white"
+                    android:textColor="@color/app_smile_text_color"
                     android:textSize="12sp" />
 
             </LinearLayout>
 
-            <ImageView
+            <CheckBox
+                android:id="@+id/id_ck_collect"
+                android:layout_marginRight="15dp"
                 android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_height="19dp"
+                android:button="@drawable/collect_checkbox_style"
                 android:layout_gravity="right"
-                android:src="@mipmap/ic_launcher" />
+                />
         </LinearLayout>
 
         <TextView
-            android:layout_width="100dp"
-            android:layout_height="35dp"
+            android:id="@+id/id_tv_mack"
+            android:layout_width="120dp"
+            android:layout_height="45dp"
             android:layout_centerInParent="true"
-            android:background="@drawable/shape_button"
+            android:background="@drawable/login_code_shape_unenabled"
             android:gravity="center"
-            android:text="我要制作"
+            android:text="我 要 制 作"
             android:textColor="@color/white" />
     </RelativeLayout>
+
 </RelativeLayout>

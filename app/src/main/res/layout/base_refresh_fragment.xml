@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@color/apptheme"
     android:fitsSystemWindows="true"
-    >
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/include_search_layou"
+        android:visibility="gone" />
+
 
     <com.andview.refreshview.XRefreshView
         android:id="@+id/xrefreshview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/id_include_search"
         android:scrollbars="none">
 
         <android.support.v7.widget.RecyclerView
@@ -19,4 +25,16 @@
             android:scrollbars="none" />
     </com.andview.refreshview.XRefreshView>
 
-</LinearLayout>
+
+    <ImageView
+        android:id="@+id/id_back_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="25dp"
+        android:layout_marginRight="15dp"
+        android:src="@mipmap/ab_refresh_back_top"
+        android:visibility="gone" />
+
+</RelativeLayout>

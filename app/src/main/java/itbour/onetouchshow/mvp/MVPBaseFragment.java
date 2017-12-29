@@ -75,6 +75,15 @@ public abstract class MVPBaseFragment<V extends BaseView,T extends BasePresenter
     }
 
 
+    protected void loginResultOpen(Class<?> pClass) {
+//        LogingStatusListener.getInstance().checkLogin(new LogingStatusListener.LoginForCallBack() {
+//            @Override
+//            public void callBack() {
+//                openActivity(pClass);
+//            }
+//        });
+    }
+
     @Override
     protected void initView() {
 

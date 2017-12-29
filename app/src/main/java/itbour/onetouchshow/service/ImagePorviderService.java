@@ -57,10 +57,14 @@ public class ImagePorviderService extends IntentService {
         for (DesignListBean.ListBean data : datas) {
             int width = UIUtils.WHD()[0] / 2 - 10;
             int height = width * data.getH() / data.getW();
-            String imUrl = ImageLoader.getShrinkImageUrl(data.getThumb(), width, height);
+            String imUrl;
+            if (data.getThumb()!=null){
+                imUrl = ImageLoader.getShrinkImageUrl(data.getThumb(), width,height);
+                data.setThumb(imUrl);
+            }
             data.setW(width);
             data.setH(height);
-            data.setThumb(imUrl);
+
         }
         DetailsAction action = new DetailsAction(subtype, datas);
         EventBus.getDefault().post(action);

@@ -3,16 +3,22 @@
     android:id="@+id/loading_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="@color/apptheme"
+    >
 
     <ProgressBar
-        android:visibility="gone"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:theme="@style/CircularProgress" />
+        android:id="@+id/progressBar1"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_gravity="center"
+        android:indeterminateBehavior="repeat"
+        android:indeterminateDrawable="@drawable/dialog_loading"
+        android:indeterminateOnly="true" />
+
 
     <itbour.onetouchshow.view.GifView
+        android:visibility="gone"
         android:id="@+id/gif_loading"
         android:layout_width="24dp"
         android:layout_height="10dp"

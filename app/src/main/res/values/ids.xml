@@ -7,4 +7,16 @@
     <item name="inching_text_style" type="id"/>
     <!--样式-->
     <item name="inching_text_type" type="id"/>
+    <!--控制控件的id-->
+    <item name="inching_control" type="id" />
+    <!--虚线边框线的id-->
+    <item name="inching_dotted_line_view" type="id" />
+    <!--标记加入容器的类型为可操作图片-->
+    <item name="inching_can_opear_img" type="id" />
+    <!--标记容器中的可操作文字-->
+    <item name="inching_can_opar_text" type="id" />
+    <!--标记容器中可操作表格-->
+    <item name="inching_can_opar_table" type="id" />
+    <!--视频编辑界面的编辑区域框-->
+    <item name="video_edit_bound" type="id" />
 </resources>

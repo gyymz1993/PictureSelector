@@ -15,21 +15,50 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:gravity="center"
-            android:text="温馨提示"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="20sp" />
 
         <TextView
-            android:layout_centerInParent="true"
             android:id="@+id/id_tv_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/id_text_title"
+            android:layout_centerInParent="true"
             android:layout_marginTop="18dp"
             android:gravity="center"
-            android:text="温馨提示"
             android:textColor="@color/black"
             android:textSize="16sp" />
+
+        <RelativeLayout
+            android:id="@+id/id_ed_ly"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="18dp"
+            android:layout_below="@+id/id_text_title"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/edit_text_style"
+            android:gravity="center"
+            android:visibility="gone"
+            >
+
+            <EditText
+                android:id="@+id/id_ed_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:hint="输入作品名称"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+
+        </RelativeLayout>
+
 
         <LinearLayout
             android:id="@+id/id_ly_twobtncontra"
@@ -38,8 +67,7 @@
             android:layout_alignParentBottom="true"
             android:layout_below="@+id/id_tv_content"
             android:layout_marginBottom="5dp"
-            android:gravity="bottom"
-            >
+            android:gravity="bottom">
 
             <TextView
                 android:id="@+id/id_btn_cancle"
@@ -52,7 +80,7 @@
                 android:background="@drawable/dialog_btn_cancle"
                 android:gravity="center"
                 android:text="取消"
-                android:textColor="#FF19E9E9"
+                android:textColor="#16cacb"
                 android:weightSum="3" />
 
             <TextView
@@ -71,14 +99,13 @@
 
         <RelativeLayout
             android:id="@+id/id_ly_onebtncontra"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:layout_alignParentBottom="true"
             android:layout_below="@+id/id_tv_content"
             android:layout_marginBottom="5dp"
             android:gravity="bottom|center"
-            >
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/id_btn_olny_cofirm"

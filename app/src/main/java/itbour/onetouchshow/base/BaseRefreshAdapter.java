@@ -61,6 +61,11 @@ public abstract class BaseRefreshAdapter<T> extends BaseRecyclerAdapter<BaseRecy
         notifyDataSetChanged();
     }
 
+    public void notifyRefreshToTop(List<T> list) {
+        this.mDatas = list;
+        notifyDataSetChanged();
+    }
+
     public void setListData(List<T> list) {
         if (list == null) {
             list = new ArrayList(0);

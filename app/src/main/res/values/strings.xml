@@ -1,7 +1,11 @@
 <resources>
-    <string name="app_name">OneTouchShow</string>
+    <string name="app_name">一键秀</string>
     <!--item work   layout-->
     <string name="delete">删除</string>
     <string name="rename">重命名</string>
+
+    <!---->
+    <string name="gotowaterprice">元 去水印</string>
+
 
 </resources>

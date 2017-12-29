@@ -68,6 +68,7 @@ public class AutoRecycleLayout extends RecyclerView {
         setLayoutManager(mLinearLayoutManager);
         setItemAnimator(null);
         mPositionThreshold = DEFAULT_POSITION_THRESHOLD;
+      //  setAutoSelectionMode(true);
     }
 
     @Override
@@ -133,7 +134,7 @@ public class AutoRecycleLayout extends RecyclerView {
         animator.start();
     }
 
-    protected void scrollToTab(int position) {
+    public void scrollToTab(int position) {
         scrollToTab(position, 0, false);
     }
 

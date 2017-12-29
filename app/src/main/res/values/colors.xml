@@ -12,15 +12,37 @@
 
     <color name="background_dark">#ff000000</color>
     <color name="background_light">#ffffffff</color>
-
+    <color name="background_l">#dcdbdb</color>
     <color name="tab_selected">#FF19E9E9</color>
     <color name="tab_normal">#9b9b9b</color>
 
-    <color name="apptheme">#FF181818</color>
+    <color name="app_bto_theme">#ff19191C</color>
+
+    <color name="apptheme">#19191c</color>
     <color name="indicatorcolor">#ffFACD2E</color>
     <color name="search_lan">#202020</color>
 
 
     <color name="app_btn_theme">#80202020</color>
+    <!--半透明黑-->
+    <color name="inching_vertical_create_doc">#f1141414</color>
+    <color name="inching_add_button">#1FB8B8</color>
+    <color name="app_smile_text_color">#FF8C8B8C</color>
+
+    <color name="apptheme_bg">#252525</color>
+    <color name="inching_panel_dark">#252525</color>
+    <color name="holo_green">#00ff00</color>
+    <color name="coupon_code_font">#333333</color>
+
+    <color name="back_tran">#32181616</color>
+
+    <color name="transparentGray">#99000000</color>
+
+    <color name="dropDownContainerColor">#d32f2f</color>
+    <color name="dropDownSelectedColor">#b71c1c</color>
+    <color name="transparent_background">#50000000</color>
+
+
+
 
 </resources>

@@ -4,33 +4,165 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <!--用于弹起的时候屏蔽其它的点击事件-->
+    <RelativeLayout
+        android:id="@+id/rl_stub"
+        android:background="@android:color/transparent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:background="@color/white">
+        android:visibility="gone"/>
 
-        <TextView
-            android:id="@+id/tv_test_close"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:layout_gravity="center"
 
-            android:text="点我收起键盘和文字编辑点我收起键盘和文字编辑点我收起键盘和文字编辑点我收起键盘和文字编辑点我收起键盘和文字编辑"
-            android:textSize="23dp" />
+    <!-- </LinearLayout>-->
+    <!--最外一级包裹微调界面和切换按钮-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv_test"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:text="点我弹出文字编辑点我弹出文字编辑点我弹出文字编辑点我弹出文字编辑点我弹出文字编辑点我弹出文字编辑点我弹出文字编辑点我弹出文字编辑"
-            android:textSize="23dp" />
-    </LinearLayout>
+        <!--fillViewport强迫填满ScrollView fillViewPort-->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:scrollbars="none">
+            <!--本区域用于社交媒体图 点击空白可以清除焦点 -->
+            <RelativeLayout
+                android:id="@+id/rl_remove_broad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#19191c"
+
+                >
+                <!--用于作图的基本区域  -->
+                <itbour.onetouchshow.custom.inching.InchingBaseAreaRelativeLayout
+                    android:id="@+id/rl_inching_base_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false" />
+
+
+            </RelativeLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:id="@+id/ll_switch_page"
+            android:layout_width="140dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="70dp"
+            android:background="@drawable/iv_inching_button_first_page"
+            android:orientation="horizontal"
+            android:visibility="gone"
+           >
+
+            <TextView
+                android:id="@+id/bt_previous_pagae"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+
+                android:textColor="@color/white"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/bt_next_pagae"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </RelativeLayout>
 
     <include layout="@layout/view_common_inching_text_opera_panel" />
+
+    <include layout="@layout/view_common_inching_table_color_panel"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/inching_vertical_create_doc"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2" />
+
+        <RelativeLayout
+            android:id="@+id/rl_next"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_gravity="center"
+            android:layout_weight="6">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:background="@drawable/login_code_shape_unenabled" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="制作完成"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_add_text"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="270dp"
+        android:layout_marginRight="30dp">
+
+        <ImageView
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_add_image" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="加字"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_add_image"
+
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="200dp"
+        android:layout_marginRight="30dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_add_image" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="加图"
+            android:textColor="@color/white" />
+    </RelativeLayout>
 </RelativeLayout>

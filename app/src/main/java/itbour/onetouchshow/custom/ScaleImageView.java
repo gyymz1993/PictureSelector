@@ -28,14 +28,7 @@ public class ScaleImageView extends android.support.v7.widget.AppCompatImageView
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (initWidth > 0 && initHeight > 0) {
-            int width = MeasureSpec.getSize(widthMeasureSpec);
-            int height = MeasureSpec.getSize(heightMeasureSpec);
-
-            float scale = (float) initHeight / (float) initWidth;
-            if (width > 0) {
-                height = (int) ((float) width * scale);
-            }
-            setMeasuredDimension(width, height);
+            setMeasuredDimension(initWidth, initHeight);
         } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }

@@ -3,7 +3,6 @@ package itbour.onetouchshow.bean;
 import java.util.List;
 
 /**
- *
  * @author onetouch
  * @date 2017/11/20
  */
@@ -13,6 +12,25 @@ public class HomeDetailslBean {
     private List<TypesBean> types;
     private List<FontListBean> fontList;
     private List<List<Integer>> colorList;
+    private TextConfigBean textConfig;
+    private AppControl appControl;
+    private LengthControl lengthControl;
+
+    public AppControl getAppControl() {
+        return appControl;
+    }
+
+    public void setAppControl(AppControl appControl) {
+        this.appControl = appControl;
+    }
+
+    public LengthControl getLengthControl() {
+        return lengthControl;
+    }
+
+    public void setLengthControl(LengthControl lengthControl) {
+        this.lengthControl = lengthControl;
+    }
 
     public List<TypesBean> getTypes() {
         return types;
@@ -37,6 +55,7 @@ public class HomeDetailslBean {
     public void setColorList(List<List<Integer>> colorList) {
         this.colorList = colorList;
     }
+
 
     public static class TypesBean {
         /**
@@ -186,4 +205,202 @@ public class HomeDetailslBean {
         }
     }
 
+
+    public TextConfigBean getTextConfig() {
+        return textConfig;
+    }
+
+    public void setTextConfig(TextConfigBean textConfig) {
+        this.textConfig = textConfig;
+    }
+
+
+    public static class LengthControl {
+
+        /*
+        *     "nickNameMaxLen": 15,           // 昵称最大长度
+            "signMaxLen" : 15,              // 签名最大长度
+            "WTTextMaxLen" : 100,           // 微调文字最大长度
+            "tableTextMaxLen": 10,          // 表格内文字最大长度
+            "tableMaxRow" : 20,             // 表格最大行
+            "tableMaxCol" : 20,             // 表格最大列
+            "FTMaxImageCnt" : 10,           // 微调可编辑图片对象最大个数
+            "FTMaxTextCnt" : 20,            // 微调可编辑文字对象最大个数
+        * */
+        private int nickNameMaxLen;
+        private int signMaxLen;
+        private int WTTextMaxLen;
+        private int tableTextMaxLen;
+        private int tableMaxRow;
+        private int tableMaxCol;
+        private int FTMaxImageCnt;
+        private int FTMaxTextCnt;
+
+        public int getNickNameMaxLen() {
+            return nickNameMaxLen;
+        }
+
+        public void setNickNameMaxLen(int nickNameMaxLen) {
+            this.nickNameMaxLen = nickNameMaxLen;
+        }
+
+        public int getSignMaxLen() {
+            return signMaxLen;
+        }
+
+        public void setSignMaxLen(int signMaxLen) {
+            this.signMaxLen = signMaxLen;
+        }
+
+        public int getWTTextMaxLen() {
+            return WTTextMaxLen;
+        }
+
+        public void setWTTextMaxLen(int WTTextMaxLen) {
+            this.WTTextMaxLen = WTTextMaxLen;
+        }
+
+        public int getTableTextMaxLen() {
+            return tableTextMaxLen;
+        }
+
+        public void setTableTextMaxLen(int tableTextMaxLen) {
+            this.tableTextMaxLen = tableTextMaxLen;
+        }
+
+        public int getTableMaxRow() {
+            return tableMaxRow;
+        }
+
+        public void setTableMaxRow(int tableMaxRow) {
+            this.tableMaxRow = tableMaxRow;
+        }
+
+        public int getTableMaxCol() {
+            return tableMaxCol;
+        }
+
+        public void setTableMaxCol(int tableMaxCol) {
+            this.tableMaxCol = tableMaxCol;
+        }
+
+        public int getFTMaxImageCnt() {
+            return FTMaxImageCnt;
+        }
+
+        public void setFTMaxImageCnt(int FTMaxImageCnt) {
+            this.FTMaxImageCnt = FTMaxImageCnt;
+        }
+
+        public int getFTMaxTextCnt() {
+            return FTMaxTextCnt;
+        }
+
+        public void setFTMaxTextCnt(int FTMaxTextCnt) {
+            this.FTMaxTextCnt = FTMaxTextCnt;
+        }
+    }
+
+
+    public static class AppControl {
+
+        //        "tel": "027-87101355",          // 客服电话
+//        "enableAppraise": 1,            // 是否允许评价(个人中心去评分是否显示)
+//        "enableForm" : 1,               // 是否支持视频作品表单功能
+        private String tel;
+        private int enableAppraise;
+        private int enableForm;
+
+        public String getTel() {
+            return tel;
+        }
+
+        public void setTel(String tel) {
+            this.tel = tel;
+        }
+
+        public int getEnableAppraise() {
+            return enableAppraise;
+        }
+
+        public void setEnableAppraise(int enableAppraise) {
+            this.enableAppraise = enableAppraise;
+        }
+
+        public int getEnableForm() {
+            return enableForm;
+        }
+
+        public void setEnableForm(int enableForm) {
+            this.enableForm = enableForm;
+        }
+    }
+
+    public static class TextConfigBean {
+
+
+        private String defaultText;
+        private int minFs;
+        private int maxLs;
+        private int minCs;
+        private int minLs;
+        private int maxFs;
+        private int maxCs;
+
+        public String getDefaultText() {
+            return defaultText;
+        }
+
+        public void setDefaultText(String defaultText) {
+            this.defaultText = defaultText;
+        }
+
+        public int getMinFs() {
+            return minFs;
+        }
+
+        public void setMinFs(int minFs) {
+            this.minFs = minFs;
+        }
+
+        public int getMaxLs() {
+            return maxLs;
+        }
+
+        public void setMaxLs(int maxLs) {
+            this.maxLs = maxLs;
+        }
+
+        public int getMinCs() {
+            return minCs;
+        }
+
+        public void setMinCs(int minCs) {
+            this.minCs = minCs;
+        }
+
+        public int getMinLs() {
+            return minLs;
+        }
+
+        public void setMinLs(int minLs) {
+            this.minLs = minLs;
+        }
+
+        public int getMaxFs() {
+            return maxFs;
+        }
+
+        public void setMaxFs(int maxFs) {
+            this.maxFs = maxFs;
+        }
+
+        public int getMaxCs() {
+            return maxCs;
+        }
+
+        public void setMaxCs(int maxCs) {
+            this.maxCs = maxCs;
+        }
+    }
 }

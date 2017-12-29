@@ -1,25 +1,21 @@
 package com.andview.refreshview;
 
 import android.content.Context;
-import android.text.Layout;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.andview.refreshview.callback.IFooterCallBack;
-import com.andview.refreshview.utils.DisplayUtils;
-import com.andview.refreshview.utils.Utils;
-import com.andview.refreshview.view.GifView;
 
 public class XRefreshViewFooter extends LinearLayout implements IFooterCallBack {
     private Context mContext;
 
     private View mContentView;
-    private GifView mProgressBar;
+    private View mProgressBar;
     private TextView mHintView;
     private TextView mClickView;
     private boolean showing = true;
@@ -44,14 +40,25 @@ public class XRefreshViewFooter extends LinearLayout implements IFooterCallBack 
                 xRefreshView.notifyLoadMore();
             }
         });
+        Log.e("XRefreshViewFooter", "onReleaseToLoadMore mHintView " + mHintView.getText().toString());
     }
 
     @Override
-    public void onStateReady() {
+    public void onStateReady(boolean mHasLoadComplete) {
+        Log.e("XRefreshViewFooter", "onStateReady mHasLoadComplete " +mHasLoadComplete);
         mHintView.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
-        mClickView.setText(R.string.xrefreshview_footer_hint_click);
-        mClickView.setVisibility(View.VISIBLE);
+        if (!mHasLoadComplete) {
+            mClickView.setText(R.string.xrefreshview_footer_hint_click);
+            mClickView.setVisibility(View.VISIBLE);
+            Log.e("XRefreshViewFooter", "onStateReady mHintView " + mClickView.getText().toString());
+        } else {
+            mHintView.setText(R.string.xrefreshview_footer_hint_complete);
+            mHintView.setVisibility(View.VISIBLE);
+            Log.e("XRefreshViewFooter", "onStateReady mHintView " + mHintView.getText().toString());
+        }
+
+
 //        show(true);
     }
 
@@ -69,29 +76,35 @@ public class XRefreshViewFooter extends LinearLayout implements IFooterCallBack 
         mProgressBar.setVisibility(View.GONE);
         mClickView.setText(R.string.xrefreshview_footer_hint_release);
         mClickView.setVisibility(View.VISIBLE);
+        Log.e("XRefreshViewFooter", "onReleaseToLoadMore mHintView " + mHintView.getText().toString());
     }
 
     @Override
     public void onStateFinish(boolean hideFooter) {
-        if (hideFooter) {
-            mHintView.setText(R.string.xrefreshview_footer_hint_normal);
-        } else {
-            //处理数据加载失败时ui显示的逻辑，也可以不处理，看自己的需求
-            mHintView.setText(R.string.xrefreshview_footer_hint_fail);
-        }
+        mHintView.setText(R.string.xrefreshview_footer_hint_normal);
+//        if (hideFooter) {
+//
+//        } else {
+//            //处理数据加载失败时ui显示的逻辑，也可以不处理，看自己的需求
+//            mHintView.setText(R.string.xrefreshview_footer_hint_fail);
+//        }
         mHintView.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);
         mClickView.setVisibility(View.GONE);
+
+        Log.e("XRefreshViewFooter", "onStateFinish mHintView " + mHintView.getText().toString());
     }
 
     @Override
     public void onStateComplete() {
-        /*已无更多数据*/
         mHintView.setText(R.string.xrefreshview_footer_hint_complete);
-        mHintView.setTextSize(DisplayUtils.dip2px(getContext(),4));
+
         mHintView.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);
         mClickView.setVisibility(View.GONE);
+
+        Log.e("XRefreshViewFooter", "onStateComplete mHintView " + mHintView.getText().toString());
+        // mHintView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -100,9 +113,9 @@ public class XRefreshViewFooter extends LinearLayout implements IFooterCallBack 
             return;
         }
         showing = show;
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mContentView
+        LayoutParams lp = (LayoutParams) mContentView
                 .getLayoutParams();
-        lp.height = show ? DisplayUtils.dip2px(getContext(),45) : 0;
+        lp.height = show ? LayoutParams.WRAP_CONTENT : 0;
         mContentView.setLayoutParams(lp);
 //        setVisibility(show?VISIBLE:GONE);
 
@@ -119,9 +132,8 @@ public class XRefreshViewFooter extends LinearLayout implements IFooterCallBack 
         moreView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
         mContentView = moreView.findViewById(R.id.xrefreshview_footer_content);
-        mProgressBar = (GifView)moreView
+        mProgressBar = moreView
                 .findViewById(R.id.xrefreshview_footer_progressbar);
-        mProgressBar.setMovieResource(R.raw.xrefresh_view_horizontal);
         mHintView = (TextView) moreView
                 .findViewById(R.id.xrefreshview_footer_hint_textview);
         mClickView = (TextView) moreView

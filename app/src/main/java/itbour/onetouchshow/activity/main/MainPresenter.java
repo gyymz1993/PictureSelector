@@ -30,7 +30,7 @@ public class MainPresenter extends BasePresenterImpl<MainContract.View> implemen
 
             @Override
             protected void onSuccess(String response) {
-                L_.i("response==="+response);
+                L_.i("APP 基础信息  response==="+response);
                 if (mvpView!=null){
                     mvpView.loadSucceed(response);
                 }

@@ -8,16 +8,16 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-		 signingConfigs {
-        config {
-            keyAlias 'onetouchshow'
-            keyPassword 'sjg123android'
-            storeFile file('onetouchshow.jks')
-            storePassword 'sjg123android'
+        multiDexEnabled true
+        manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"]//添加一个默认渠道号
+        signingConfigs {
+            config {
+                keyAlias 'onetouchshow'
+                keyPassword 'sjg123android'
+                storeFile file('onetouchshow.jks')
+                storePassword 'sjg123android'
+            }
         }
-    }
 
         /*防止x5浏览器 在x64位机器上不能使用*/
         ndk {
@@ -30,6 +30,7 @@ android {
             jniLibs.srcDirs = ['src/main/jniLibs']
 
             res.srcDirs = [
+                    'src/main/res/layout/videoplay',
                     'src/main/res/layout/video',
                     'src/main/res/layout',
                     'src/main/res'
@@ -50,6 +51,42 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     buildToolsVersion '26.0.2'
+    //655xxx的方法限制分包处理
+    dexOptions {
+        javaMaxHeapSize "4g"
+        //加快编译速度
+        // incremental true
+    }
+
+    flavorDimensions "default"
+    productFlavors {
+
+//        Tencent {}
+//        TencentGDT {}
+//        BAIDU_MOBILE {}
+//        BAIDU_ANDROID {}
+//        BAIDU_91 {}
+//        VIVO {}
+//        QH360 {}
+//        OPPMOBILE {}
+//        MUMAYI {}
+//        LENOVO {}
+//        HUAWEI {}
+//        LETV {}
+//        XIAOMI {}
+//        PP {}
+//        ANZHI {}
+//        MEIZU {}
+//        SOUGOU {}
+//        OneTouch {}
+//        ANZHUOAPK {}
+//        SAMSUNGAPPS {}
+//        SHICHANG {}
+    }
+    //注意我注释掉的，可以去掉注释，那样的话，下面这句就可以不用了
+    productFlavors.all {
+        flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+    }
 
 }
 
@@ -59,13 +96,11 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     //android百分比布局
     implementation 'com.android.support:percent:26.1.0'
-    testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
-
     /*沉浸栏*/
-    androidTestImplementation 'com.readystatesoftware.systembartint:systembartint:1.0.4'
+    //androidTestImplementation 'com.readystatesoftware.systembartint:systembartint:1.0.4'
     debugImplementation rootProject.ext.dependencies["canary-debug"]
     releaseImplementation rootProject.ext.dependencies["canary-release"]
     testImplementation rootProject.ext.dependencies["canary-release"]
@@ -80,4 +115,11 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     implementation project(':loginlibrary')
     compile 'com.just.agentweb:agentweb:2.0.1'
+    implementation files('libs/aliyun-oss-sdk-android-2.2.0.jar')
+    compile 'com.chenlittleping:recyclercoverflow:1.0.5'
+    //zxing二维码
+    compile 'com.journeyapps:zxing-android-embedded:3.5.0'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.airbnb.android:lottie:2.0.0'
+    compile 'com.umeng.analytics:analytics:latest.integration'
 }

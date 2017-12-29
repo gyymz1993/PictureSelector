@@ -13,6 +13,9 @@ public class BaseUser {
      * 2. 女
      */
 
+
+    private String unionid;
+
     private String openId;
 
     private String nickname;
@@ -61,6 +64,14 @@ public class BaseUser {
 
     public void setHeadImageUrlLarge(String headImageUrlLarge) {
         this.headImageUrlLarge = headImageUrlLarge;
+    }
+
+    public String getUnionid() {
+        return unionid;
+    }
+
+    public void setUnionid(String unionid) {
+        this.unionid = unionid;
     }
 
     @Override

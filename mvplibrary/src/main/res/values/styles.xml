@@ -52,4 +52,5 @@
         <item name="android:activityCloseExitAnimation">@anim/base_slide_right_out</item>
     </style>
 
+
 </resources>

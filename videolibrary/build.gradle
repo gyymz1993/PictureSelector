@@ -11,15 +11,15 @@ android {
         }
     }
 
-    sourceSets {
-        main {
-            res.srcDirs = [
-                    'src/main/res/layout/video',
-                    'src/main/res/layout',
-                    'src/main/res'
-            ]
-        }
-    }
+//    sourceSets {
+//        main {
+//            res.srcDirs = [
+//                    'src/main/res/layout/video',
+//                    'src/main/res/layout',
+//                    'src/main/res'
+//            ]
+//        }
+//    }
 
 }
 
@@ -32,19 +32,20 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
 
-    compile 'com.shuyu:gsyVideoPlayer-java:2.1.1'
-    implementation 'com.github.bumptech.glide:glide:4.2.0'
+    compile 'com.shuyu:gsyVideoPlayer-java:2.1.2'
+    //implementation 'com.github.bumptech.glide:glide:4.2.0'
 
     //根据你的需求
-    implementation 'com.shuyu:gsyVideoPlayer-armv5:2.1.1'
-    implementation 'com.shuyu:gsyVideoPlayer-armv7a:2.1.1'
-    compile 'com.shuyu:gsyVideoPlayer-arm64:2.1.1'
-    compile 'com.shuyu:gsyVideoPlayer-x64:2.1.1'
-    compile 'com.shuyu:gsyVideoPlayer-x86:2.1.1'
+    implementation 'com.shuyu:gsyVideoPlayer-armv5:2.1.2'
+    implementation 'com.shuyu:gsyVideoPlayer-armv7a:2.1.2'
+    compile 'com.shuyu:gsyVideoPlayer-arm64:2.1.2'
+    compile 'com.shuyu:gsyVideoPlayer-x64:2.1.2'
+    compile 'com.shuyu:gsyVideoPlayer-x86:2.1.2'
+
 
     //    # required, enough for most devices.
-    //compile 'tv.danmaku.ijk.media:ijkplayer-java:0.8.4'
-    //compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.4'
+   // compile 'tv.danmaku.ijk.media:ijkplayer-java:0.8.4'
+   // compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.4'
 
     //compile 'tv.danmaku.ijk.media:ijkplayer-java:0.5.1'
     //compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.5.1'

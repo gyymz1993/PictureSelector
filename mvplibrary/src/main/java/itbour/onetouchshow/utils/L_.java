@@ -48,6 +48,7 @@ public class L_ {
     private static final int XML = 9;
     private static final int JSON_INDENT = 4;
     public static String TAG = "angcyo";
+//    public static boolean LOG_DEBUG = false;
     public static boolean LOG_DEBUG = true;
 
     public static void init(boolean isDebug, String tag) {

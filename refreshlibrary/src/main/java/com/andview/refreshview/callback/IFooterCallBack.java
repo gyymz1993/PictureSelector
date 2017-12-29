@@ -12,8 +12,11 @@ public interface IFooterCallBack {
 
     /**
      * 正常状态，例如需要点击footerview才能加载更多，主要是到达底部不自动加载更多时会被调用
+     *
+     * 只有一页数据
+     *
      */
-    void onStateReady();
+    void onStateReady(boolean mHasLoadComplete);
 
     /**
      * 正在刷新

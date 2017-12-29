@@ -9,6 +9,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
 import itbour.onetouchshow.R;
+import itbour.onetouchshow.utils.transform.GlideCircleTransform;
 
 /**
  * @author ymz
@@ -26,33 +27,53 @@ public class ImageLoader {
     }
 
 
-    //把所有的图缩小
     public static String getShrinkImageUrl(String orangleUrl, int w, int h) {
-        //L_.e("显示图片" + orangleUrl + "?x-oss-process=image/resize,m_lfit,h_" + h + ",w_" + w);
+//        return orangleUrl+SHRINKURL+(int)(h/2);
+        // L_.e("显示图片" + orangleUrl + "?x-oss-process=image/resize,m_lfit,h_" + h + ",w_" + w);
         return orangleUrl + "?x-oss-process=image/resize,m_lfit,h_" + h + ",w_" + w;
     }
 
-    //把所有的图缩小
-    public static String getShrinkImageUrl(String orangleUrl, int w) {
-        return orangleUrl + "?x-oss-process=image/resize,m_lfit,w_" + w;
+
+    public static String getShrinkImageUrl(String orangleUrl, int h) {
+        return orangleUrl + SHRINKURL + (int) (h);
+
     }
 
     public void showRealSizeImage(String url, ImageView imageView) {
         Glide.with(UIUtils.getContext()).setDefaultRequestOptions(new RequestOptions()
-        .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).skipMemoryCache(false).
-                diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(new ColorDrawable(UIUtils.getColor(R.color.apptheme))))
+                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).skipMemoryCache(false).
+                        diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(new ColorDrawable(UIUtils.getColor(R.color.apptheme))))
                 .load(url).into(imageView);
     }
 
     public void showImage(String url, ImageView imageView) {
-        Glide.with(UIUtils.getContext()).setDefaultRequestOptions(new RequestOptions()
-        .skipMemoryCache(false).diskCacheStrategy(DiskCacheStrategy.ALL)
-        .centerCrop()).load(url).into(imageView);
+//        Glide.with(UIUtils.getContext()).setDefaultRequestOptions(new RequestOptions()
+//        .skipMemoryCache(false).diskCacheStrategy(DiskCacheStrategy.ALL)
+//        .centerCrop()).load(url).into(imageView);
+        Glide.with(UIUtils.getContext()).applyDefaultRequestOptions(new RequestOptions()
+                .placeholder(R.drawable.place_icon).error(R.drawable.place_icon)).load(url).into(imageView);
+//        Glide.with(UIUtils.getContext())
+//                .load(url)
+//                .apply(new RequestOptions()
+//                        .placeholder(R.drawable.empty_drawable))
+//                .into(imageView);
     }
 
 
+    public void showImageNoplace(String url, ImageView imageView) {
+//        Glide.with(UIUtils.getContext()).setDefaultRequestOptions(new RequestOptions()
+//        .skipMemoryCache(false).diskCacheStrategy(DiskCacheStrategy.ALL)
+//        .centerCrop()).load(url).into(imageView);
+        Glide.with(UIUtils.getContext()).applyDefaultRequestOptions(new RequestOptions()).load(url).into(imageView);
+//        Glide.with(UIUtils.getContext())
+//                .load(url)
+//                .apply(new RequestOptions()
+//                        .placeholder(R.drawable.empty_drawable))
+//                .into(imageView);
+    }
 
-    public static void load( int resId, ImageView iv) {
+
+    public void load(int resId, ImageView iv) {
         Glide.with(UIUtils.getContext()).setDefaultRequestOptions(new RequestOptions()
                 .diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop()
                 .error(R.mipmap.ic_launcher)
@@ -76,5 +97,15 @@ public class ImageLoader {
                 .load(url)
                 .into(imageView);
     }
+
+
+    /**
+     * 加载第三秒的帧数作为封面
+     */
+    public void showRundImage(String url, ImageView imageView) {
+        Glide.with(UIUtils.getContext()).applyDefaultRequestOptions(new RequestOptions()
+                .transform(new GlideCircleTransform())).load(url).into(imageView);
+    }
+
 
 }

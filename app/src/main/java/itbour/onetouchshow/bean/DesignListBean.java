@@ -210,6 +210,11 @@ public class DesignListBean implements Parcelable {
                 return new ListBean[size];
             }
         };
+
+        @Override
+        public String toString() {
+            return "ListBean{" + "typeDesc='" + typeDesc + '\'' + ", order=" + order + ", thumb='" + thumb + '\'' + ", time='" + time + '\'' + ", id=" + id + ", name='" + name + '\'' + ", useCounts=" + useCounts + ", h=" + h + ", w=" + w + ", author='" + author + '\'' + ", opType=" + opType + ", subtype='" + subtype + '\'' + '}';
+        }
     }
 
     @Override

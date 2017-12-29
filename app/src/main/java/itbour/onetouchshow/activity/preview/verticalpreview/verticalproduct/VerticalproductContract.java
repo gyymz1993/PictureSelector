@@ -1,7 +1,5 @@
 package itbour.onetouchshow.activity.preview.verticalpreview.verticalproduct;
 
-import android.content.Context;
-
 import itbour.onetouchshow.mvp.BasePresenter;
 import itbour.onetouchshow.mvp.BaseView;
 
@@ -12,7 +10,12 @@ import itbour.onetouchshow.mvp.BaseView;
 
 public class VerticalproductContract {
     interface View extends BaseView {
-        
+        void removeWatermarkSuccess(String result);
+        void removeWatermarkFail(String result);
+
+        void copyandNewProducesuccess(String tmpId);
+
+        void downLoadPrintSuccess(String path );
     }
 
     interface  Presenter extends BasePresenter<View> {

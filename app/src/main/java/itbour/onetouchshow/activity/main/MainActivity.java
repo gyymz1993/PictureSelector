@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.View;
 
 import com.google.gson.Gson;
+import com.umeng.analytics.game.UMGameAgent;
 import com.ys.uilibrary.tab.BottomTabView;
 import com.ys.uilibrary.vp.NoScrollViewPager;
 
@@ -15,14 +17,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import itbour.onetouchshow.App;
 import itbour.onetouchshow.AppConst;
+import itbour.onetouchshow.ExceptionCrashHander;
 import itbour.onetouchshow.R;
+import itbour.onetouchshow.activity.login.LoginActivity;
+import itbour.onetouchshow.base.BaseApplication;
 import itbour.onetouchshow.bean.HomeDetailslBean;
 import itbour.onetouchshow.fragment.design.DesignFragment;
 import itbour.onetouchshow.fragment.home.HomeFragment;
 import itbour.onetouchshow.fragment.me.MeFragment;
 import itbour.onetouchshow.mvp.MVPBaseActivity;
+import itbour.onetouchshow.observable.NetWorkObservable;
+import itbour.onetouchshow.singlecase.InchingDataSingleCase;
 import itbour.onetouchshow.utils.L_;
+import itbour.onetouchshow.utils.SpUtils;
 import itbour.onetouchshow.utils.T_;
 
 
@@ -31,7 +40,7 @@ import itbour.onetouchshow.utils.T_;
  * 邮箱 784787081@qq.com
  */
 
-public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresenter> implements MainContract.View {
+public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresenter> implements MainContract.View, NetWorkObservable.NetWorkObserver {
 
     @BindView(R.id.viewPager)
     public NoScrollViewPager viewPager;
@@ -41,7 +50,7 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
     FragmentPagerAdapter adapter;
     ArrayList<Fragment> fragments = new ArrayList<>();
     ArrayList<BottomTabView.TabItemView> tabItemViews = new ArrayList<>();
-    private String[] titles = new String[]{"玩大片", "设计", "我的"};
+    private String[] titles = new String[]{"玩大片", "搞设计", "我的"};
     /**
      * 玩大片页面数据
      */
@@ -51,10 +60,24 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
      */
     List<HomeDetailslBean.TypesBean> designList;
     Fragment homeFrg, design, groupFrg, meFrg;
+    private int currentPageIndex = -1;
 
     @Override
     public void loadSucceed(String result) {
         HomeDetailslBean homeDetailslBean = new Gson().fromJson(result, HomeDetailslBean.class);
+        List<List<Integer>> colorList = homeDetailslBean.getColorList();
+        List<HomeDetailslBean.FontListBean> fontList = homeDetailslBean.getFontList();
+        HomeDetailslBean.TextConfigBean textConfig = homeDetailslBean.getTextConfig();
+        HomeDetailslBean.AppControl appControl = homeDetailslBean.getAppControl();
+        HomeDetailslBean.LengthControl lengthControl = homeDetailslBean.getLengthControl();
+
+        InchingDataSingleCase.INSTANCE.setFontColorList(colorList);
+        InchingDataSingleCase.INSTANCE.setFontTypeList(fontList);
+        InchingDataSingleCase.INSTANCE.setTextConfig(textConfig);
+        InchingDataSingleCase.INSTANCE.setAppControl(appControl);
+        InchingDataSingleCase.INSTANCE.setLengthControl(lengthControl);
+
+
         List<HomeDetailslBean.TypesBean> types = homeDetailslBean.getTypes();
         playLargeList = new ArrayList<>();
         designList = new ArrayList<>();
@@ -62,21 +85,26 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
             T_.showToastReal("初始化数据失败");
             return;
         }
+        AppConst.mAllType.clear();
+        AppConst.mSearchIds.clear();
         for (HomeDetailslBean.TypesBean typesBean : types) {
-            //如果等于玩大片取值 否则就问设计
-            if (typesBean.getDesc().equals(AppConst.PLAY_LARGE)) {
+            //存储所有分类ID
+            AppConst.mSearchIds.add(typesBean.getSt_id());
+            AppConst.mAllType.put(typesBean.getSt_id(), typesBean.getName());
+            //如果等于玩大片取值 否则就设计
+            if (typesBean.getName().equals(AppConst.PLAY_LARGE)) {
                 playLargeList.add(typesBean);
             } else {
                 designList.add(typesBean);
             }
         }
         initParams();
-        L_.e(types.size() + "---", types.toString());
+        //L_.e(types.size() + "---", types.toString());
     }
 
     @Override
     public void loadFaild(String error) {
-
+        T_.showToastReal(error);
     }
 
     @Override
@@ -86,8 +114,25 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
 
     @Override
     protected void afterCreate(Bundle savedInstanceState) {
+        SpUtils.getInstance().saveBoolean("isFirst", false);
         mPresenter.getHomeDetailsData();
+        BaseApplication.instance().registerNetWorkObserver(this);
         setImmersionBarBlack();
+
+
+    }
+
+    private void initButtomTab() {
+        bottomTabView.setTabItemViews(getTabViews());
+        if (getOnTabItemSelectListener() != null) {
+            bottomTabView.setOnTabItemSelectListener(getOnTabItemSelectListener());
+        }
+        bottomTabView.setOnSecondSelectListener(new BottomTabView.OnSecondSelectListener() {
+            @Override
+            public void onSecondSelect(int position) {
+
+            }
+        });
     }
 
 
@@ -103,7 +148,7 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
 
     @Override
     public void initView() {
-
+        initButtomTab();
     }
 
     protected List<BottomTabView.TabItemView> getTabViews() {
@@ -125,7 +170,7 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
         //groupFrg = new HomeFragment(playLargeList);
         meFrg = new MeFragment();
         //设置ViewPager的缓存界面数,默认缓存为2
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setOffscreenPageLimit(2);
         adapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
@@ -139,22 +184,6 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
         };
 
         viewPager.setAdapter(adapter);
-        if (getCenterView() == null) {
-            bottomTabView.setTabItemViews(getTabViews());
-        } else {
-            bottomTabView.setTabItemViews(getTabViews(), getCenterView());
-        }
-        if (getOnTabItemSelectListener() != null) {
-            bottomTabView.setOnTabItemSelectListener(getOnTabItemSelectListener());
-        }
-
-        bottomTabView.setOnSecondSelectListener(new BottomTabView.OnSecondSelectListener() {
-            @Override
-            public void onSecondSelect(int position) {
-
-            }
-        });
-
         if (getOnPageChangeListener() != null) {
             viewPager.addOnPageChangeListener(getOnPageChangeListener());
         }
@@ -180,6 +209,30 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
         };
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (AppConst.CURRENT_PAGE != -1 && App.isLogin()) {
+            bottomTabView.updatePosition(2);
+            viewPager.setCurrentItem(2, false);
+            AppConst.CURRENT_PAGE = -1;
+        }
+        if (ExceptionCrashHander.isException) {
+            mPresenter.getHomeDetailsData();
+        }
+        // 集成基本统计分析,初始化 Session
+        UMGameAgent.onResume(getApplication());
+
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // //集成基本统计分析, 结束 Session
+        UMGameAgent.onPause(getApplication());
+    }
+
 
     public View getCenterView() {
         return null;
@@ -189,8 +242,55 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
         return new BottomTabView.OnTabItemSelectListener() {
             @Override
             public void onTabItemSelect(int position) {
-                viewPager.setCurrentItem(position, true);
+                if (position == 2) {
+                    if (App.isLogin()) {
+                        viewPager.setCurrentItem(position, true);
+                    } else {
+                        currentPageIndex = viewPager.getCurrentItem();
+                        bottomTabView.updatePosition(currentPageIndex);
+                        AppConst.CURRENT_PAGE = position;
+                        openActivity(LoginActivity.class);
+                    }
+                } else {
+                    viewPager.setCurrentItem(position, true);
+                }
             }
         };
+    }
+
+
+    //记录用户首次点击返回键的时间
+    private long firstTime = 0;
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                long secondTime = System.currentTimeMillis();
+                if (secondTime - firstTime > 2000) {
+                    T_.showToastReal("再按一次退出程序");
+                    firstTime = secondTime;
+                    return true;
+                } else {
+                    System.exit(0);
+                }
+                break;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BaseApplication.instance().unregisterNetWorkObserver(this);
+    }
+
+    @Override
+    public void onNetWorkStatusChange(boolean connected) {
+    }
+
+    @Override
+    public void onNewWorkEnvironment(NetWorkObservable.NetStateChangeEvent.NetState netState) {
+
     }
 }

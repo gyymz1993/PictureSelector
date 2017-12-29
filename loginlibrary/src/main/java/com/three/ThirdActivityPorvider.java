@@ -43,16 +43,16 @@ public class ThirdActivityPorvider extends AppCompatActivity {
         mType = getIntent().getIntExtra(TYPE, 0);
         if (mType == ThirdShareUtils.TYPE) {
             // 分享
-            ThirdShareUtils.initialize(this).action();
+            ThirdShareUtils.initialize().action(this);
         } else if (mType == ThirdLoginUtils.TYPE) {
             // 登录
-            ThirdLoginUtils.initialize(this).action();
+            ThirdLoginUtils.initialize().action(this);
         } else {
             Log.e("onCreate", getIntent().toString());
             // handle 微信回调
-            ThirdLoginUtils.initialize(this).handleResult(-1, -1, getIntent());
-            ThirdShareUtils.initialize(this).handleResult(getIntent());
-            ThirdPayUtils.initialize(this).handleResult(-1, -1, getIntent());
+            ThirdLoginUtils.initialize().handleResult(-1, -1, getIntent());
+            ThirdShareUtils.initialize().handleResult(getIntent());
+//            ThirdPayUtils.initialize(this).handleResult(-1, -1, getIntent());
             finish();
         }
     }
@@ -72,9 +72,9 @@ public class ThirdActivityPorvider extends AppCompatActivity {
         super.onNewIntent(intent);
         // 处理回调
         if (mType == ThirdLoginUtils.TYPE) {
-            ThirdLoginUtils.initialize(this).handleResult(0, 0, intent);
+            ThirdLoginUtils.initialize().handleResult(0, 0, intent);
         } else if (mType == ThirdShareUtils.TYPE) {
-            ThirdShareUtils.initialize(this).handleResult(intent);
+            ThirdShareUtils.initialize().handleResult(intent);
         }
         finish();
     }
@@ -84,9 +84,9 @@ public class ThirdActivityPorvider extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         // 处理回调
         if (mType == ThirdLoginUtils.TYPE) {
-            ThirdLoginUtils.initialize(this).handleResult(requestCode, resultCode, data);
+            ThirdLoginUtils.initialize().handleResult(requestCode, resultCode, data);
         } else if (mType == ThirdShareUtils.TYPE) {
-            ThirdShareUtils.initialize(this).handleResult(data);
+            ThirdShareUtils.initialize().handleResult(data);
         }
         finish();
     }

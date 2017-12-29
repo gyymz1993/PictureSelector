@@ -1,6 +1,5 @@
 package itbour.onetouchshow.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -14,10 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import itbour.onetouchshow.base.R;
-import itbour.onetouchshow.utils.L_;
 import itbour.onetouchshow.utils.UIUtils;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 
 /**

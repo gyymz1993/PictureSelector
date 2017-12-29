@@ -9,7 +9,7 @@
     <itbour.onetouchshow.view.NavigationBarView
         android:id="@+id/id_bar_view"
         android:layout_width="match_parent"
-        android:layout_height="51dip"
+        android:layout_height="50dip"
         app:leftSize="17sp"
         />
 

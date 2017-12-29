@@ -169,7 +169,7 @@
         android:background="#000000"
         >
 
-        <EditText
+        <itbour.onetouchshow.custom.ClearEditTextView
             android:id="@+id/et_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"

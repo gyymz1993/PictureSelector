@@ -2,6 +2,7 @@ package itbour.onetouchshow.base;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -45,7 +46,7 @@ public abstract class ABaseFragment extends Fragment implements NetworkStateView
         addChildView(inflater);
 
         unbinder = ButterKnife.bind(this, mView);
-        
+
         iniPresenter();
 
         initDialog();
@@ -70,7 +71,7 @@ public abstract class ABaseFragment extends Fragment implements NetworkStateView
 
     /**
      * 初始化数据
-      */
+     */
     protected abstract void initData();
 
     /**
@@ -79,10 +80,9 @@ public abstract class ABaseFragment extends Fragment implements NetworkStateView
     protected abstract void initView();
 
     /**
-     *   初始化头部
-      */
+     * 初始化头部
+     */
     protected abstract void initTitle();
-
 
 
     /**
@@ -93,7 +93,7 @@ public abstract class ABaseFragment extends Fragment implements NetworkStateView
     private void addChildView(LayoutInflater inflater) {
         networkStateView = (NetworkStateView) mView.findViewById(R.id.nsv_state_view);
         FrameLayout container = (FrameLayout) mView.findViewById(R.id.fl_fragment_child_container);
-        if (getLayoutId()==0)return;
+        if (getLayoutId() == 0) return;
         View child = inflater.inflate(getLayoutId(), null);
         container.addView(child, 0);
     }
@@ -110,7 +110,7 @@ public abstract class ABaseFragment extends Fragment implements NetworkStateView
      * 显示加载中的布局
      */
     public void showLoadingView() {
-        if (networkStateView==null){
+        if (networkStateView == null) {
             return;
         }
         networkStateView.showLoading();
@@ -120,7 +120,7 @@ public abstract class ABaseFragment extends Fragment implements NetworkStateView
      * 显示加载完成后的布局(即子类Activity的布局)
      */
     public void showContentView() {
-        if (networkStateView==null) {
+        if (networkStateView == null) {
             return;
         }
         networkStateView.showSuccess();
@@ -131,6 +131,14 @@ public abstract class ABaseFragment extends Fragment implements NetworkStateView
      */
     public void showNoNetworkView() {
         networkStateView.showNoNetwork();
+        networkStateView.setOnRefreshListener(this);
+    }
+
+    /**
+     * 显示没有数据的布局
+     */
+    public void showEmptyView(int resId) {
+        networkStateView.showEmpty(resId,"");
         networkStateView.setOnRefreshListener(this);
     }
 
@@ -271,6 +279,12 @@ public abstract class ABaseFragment extends Fragment implements NetworkStateView
         startActivity(intent);
     }
 
+
+    public void goToCellPhoneActivity(String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
 
     protected void lazyLoad() {
     }
